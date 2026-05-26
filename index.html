@@ -309,15 +309,32 @@
             }
         }
 
-        async function dispatchPrayerToggle(prayerName, targetState) {
+       async function dispatchPrayerToggle(prayerName, targetState) {
     try {
-        // Fires a safe text payload to clear CORS blockades
-        await fetch(API_URL, {
+        const response = await fetch(API_URL, {
             method: 'POST',
-            mode: 'no-cors',
             headers: {
-                'Content-Type': 'text/plain'
+                'Content-Type': 'application/json'
             },
+            body: JSON.stringify({
+                action: 'updateStatus',
+                type: 'namaz',
+                studentId: currentStudentId,
+                prayer: prayerName,
+                value: targetState
+            })
+        });
+
+        const result = await response.json();
+        console.log(result);
+
+        await synchronizeCorePayload();
+
+    } catch(err) {
+        console.error("Failed to sync prayer status:", err);
+        alert("Failed to mark prayer");
+    }
+}
             body: JSON.stringify({
                 action: 'updateStatus',
                 type: 'namaz',
