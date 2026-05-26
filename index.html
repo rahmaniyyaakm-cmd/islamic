@@ -1,354 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rahmaniyya Islamic Tracker</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --islamic-green: #064e3b;
-            --gold: #d97706;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #0f172a; /* Dark mode background */
-            color: #f8fafc;
-        }
-        .gold-glow {
-            text-shadow: 0 0 10px rgba(217, 119, 6, 0.5);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rahmaniyya Islamic Tracker</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b1511; color: #f3f4f6; }
+    .glass { background: rgba(18, 38, 32, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(212, 175, 55, 0.15); }
+    .gold-glow { box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
+  </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between">
+<body class="min-h-screen pb-12">
 
-    <div id="login-page" class="flex-grow flex items-center justify-center px-4">
-        <div class="bg-slate-800 border border-emerald-800/50 p-8 rounded-2xl shadow-2xl max-w-md w-full text-center">
-            <div class="text-emerald-500 text-5xl mb-3"><i class="fa-solid fa-mosque"></i></div>
-            <h2 class="text-2xl font-bold mb-2 tracking-wide text-amber-500 gold-glow">Rahmaniyya Portal</h2>
-            <p class="text-slate-400 text-sm mb-6">Daily Namaz & Quran Progress App</p>
-            
-            <form id="login-form" class="space-y-4 text-left">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">STUDENT ID</label>
-                    <input type="text" id="login-id" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 transition-colors" placeholder="e.g., STU001">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1">PASSWORD</label>
-                    <input type="password" id="login-pass" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 transition-colors" placeholder="••••••••">
-                </div>
-                <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-600 font-bold p-3 rounded-lg text-white transition-all shadow-md transform active:scale-95 mt-2">
-                    Sign In
-                </button>
-            </form>
+  <div id="login-container" class="flex flex-col items-center justify-center min-h-screen px-4">
+    <div class="glass w-full max-w-md rounded-2xl p-8 gold-glow">
+      <div class="text-center mb-6">
+        <h1 class="text-3xl font-bold text-amber-400 tracking-wide">RAHMANIYYA</h1>
+        <p class="text-emerald-400 text-sm mt-1">Islamic Spirit Performance Tracker</p>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Student ID</label>
+          <input type="text" id="login-id" class="w-full bg-[#070d0b] border border-emerald-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-400 transition" placeholder="e.g., STU001">
         </div>
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-gray-400 mb-1">Password</label>
+          <input type="password" id="login-pass" class="w-full bg-[#070d0b] border border-emerald-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-amber-400 transition" placeholder="••••••••">
+        </div>
+        <button onclick="handleLogin()" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold py-3.5 rounded-xl transition mt-2 active:scale-95 shadow-lg">Verify & Sign In</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="app-container" class="hidden max-w-4xl mx-auto px-4 pt-6 space-y-6">
+    
+    <div class="glass rounded-2xl p-6 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div>
+        <h2 class="text-xl font-bold text-amber-400">Assalamu Alaikum, <span id="user-name">Student</span>!</h2>
+        <p class="text-xs text-emerald-400 tracking-wide mt-0.5">Keep up your consistent spiritual growth today.</p>
+      </div>
+      <button onclick="logout()" class="text-xs text-red-400 border border-red-900/40 bg-red-950/20 px-3 py-1.5 rounded-lg hover:bg-red-900/30 transition">Log Out</button>
     </div>
 
-    <div id="app-dashboard" class="hidden flex-grow flex flex-col pb-20">
-        <header class="bg-emerald-950/80 backdrop-blur border-b border-emerald-800 p-4 sticky top-0 z-50 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <div class="text-amber-500 text-xl"><i class="fa-solid fa-crescent"></i></div>
-                <div>
-                    <h1 id="user-display-name" class="font-bold text-sm text-white">Loading...</h1>
-                    <p class="text-xs text-emerald-400" id="current-date-badge"></p>
-                </div>
-            </div>
-            <button onclick="logout()" class="text-slate-400 hover:text-rose-400 text-sm p-2 transition-colors">
-                <i class="fa-solid fa-right-from-bracket"></i>
-            </button>
-        </header>
-
-        <main class="max-w-md w-full mx-auto p-4 space-y-6 flex-grow">
-            
-            <section id="track-section" class="space-y-6">
-                <div class="bg-gradient-to-r from-emerald-900 to-teal-950 p-4 rounded-xl border border-emerald-700/40 flex justify-between items-center shadow-lg">
-                    <div class="flex items-center space-x-3">
-                        <span class="text-amber-500 text-2xl"><i class="fa-solid fa-fire-flame-curved"></i></span>
-                        <div>
-                            <p class="text-xs text-emerald-300 font-medium">CURRENT STREAK</p>
-                            <h3 class="text-xl font-black" id="streak-count">0 Days</h3>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-[10px] text-slate-400">Keep it up!</p>
-                    </div>
-                </div>
-
-                <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700 shadow-md">
-                    <h3 class="text-md font-bold mb-4 flex items-center text-amber-500"><i class="fa-solid fa-person-praying mr-2"></i> Daily Namaz <span class="ml-2 text-xs font-normal text-slate-400">(Max 1 check/day)</span></h3>
-                    <div class="space-y-3" id="namaz-checkbox-group">
-                        </div>
-                    <button onclick="submitNamaz()" class="w-full mt-4 bg-emerald-700 hover:bg-emerald-600 py-2.5 rounded-xl text-xs font-bold transition-all">
-                        Save Namaz Log
-                    </button>
-                </div>
-
-                <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700 shadow-md">
-                    <h3 class="text-md font-bold mb-3 flex items-center text-amber-500"><i class="fa-solid fa-book-quran mr-2"></i> Quran Log <span class="ml-2 text-xs font-normal text-slate-400">(Multiple logs allowed)</span></h3>
-                    <div class="space-y-3">
-                        <div>
-                            <label class="block text-[11px] text-slate-400 mb-1">PAGES COMPLETED</label>
-                            <input type="number" id="quran-pages" min="1" placeholder="e.g., 2" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-emerald-500">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] text-slate-400 mb-1">SURAH / PARAH NOTE</label>
-                            <input type="text" id="quran-note" placeholder="e.g., Al-Baqarah Verses 1-20" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-emerald-500">
-                        </div>
-                        <button onclick="submitQuran()" class="w-full bg-amber-600 hover:bg-amber-500 py-2.5 rounded-xl text-xs font-bold transition-all">
-                            Log Recitation
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <section id="analytics-section" class="hidden space-y-6">
-                <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700 shadow-md">
-                    <h3 class="text-md font-bold mb-4 text-amber-500"><i class="fa-solid fa-chart-line mr-2"></i> Performance Metrics</h3>
-                    <div class="relative w-full h-48 mb-4">
-                        <canvas id="namazChart"></canvas>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4 text-center mt-2">
-                        <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700">
-                            <span class="text-xs text-slate-400 block">Namaz Completion %</span>
-                            <span class="text-lg font-bold text-emerald-400" id="analytics-namaz-pct">0%</span>
-                        </div>
-                        <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700">
-                            <span class="text-xs text-slate-400 block">Total Quran Pages</span>
-                            <span class="text-lg font-bold text-amber-400" id="analytics-quran-total">0</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="leaderboard-section" class="hidden space-y-6">
-                <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700 shadow-md">
-                    <h3 class="text-md font-bold mb-4 text-amber-500 flex items-center"><i class="fa-solid fa-trophy mr-2 text-yellow-500"></i> Top 10 Leaderboard</h3>
-                    <div class="overflow-hidden rounded-xl border border-slate-700 bg-slate-900">
-                        <table class="w-full text-left text-xs">
-                            <thead class="bg-slate-800 text-slate-300 border-b border-slate-700">
-                                <tr>
-                                    <th class="p-3 text-center">Rank</th>
-                                    <th class="p-3">Student</th>
-                                    <th class="p-3 text-center">Namaz %</th>
-                                    <th class="p-3 text-center">Quran (Pgs)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="leaderboard-entries" class="divide-y divide-slate-800 text-slate-300">
-                                </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <nav class="fixed bottom-0 left-0 right-0 bg-slate-950/95 border-t border-slate-800 p-2 flex justify-around items-center max-w-md mx-auto shadow-2xl z-50 rounded-t-xl">
-            <button onclick="switchTab('track')" id="btn-tab-track" class="flex flex-col items-center space-y-1 text-emerald-500 transition-colors w-16">
-                <span class="text-lg"><i class="fa-solid fa-pen-to-square"></i></span>
-                <span class="text-[10px] font-medium">Track</span>
-            </button>
-            <button onclick="switchTab('analytics')" id="btn-tab-analytics" class="flex flex-col items-center space-y-1 text-slate-400 hover:text-slate-200 transition-colors w-16">
-                <span class="text-lg"><i class="fa-solid fa-chart-pie"></i></span>
-                <span class="text-[10px] font-medium">Analysis</span>
-            </button>
-            <button onclick="switchTab('leaderboard')" id="btn-tab-leaderboard" class="flex flex-col items-center space-y-1 text-slate-400 hover:text-slate-200 transition-colors w-16">
-                <span class="text-lg"><i class="fa-solid fa-star"></i></span>
-                <span class="text-[10px] font-medium">Top 10</span>
-            </button>
-        </nav>
+    <div class="grid grid-cols-3 gap-3">
+      <div class="glass rounded-xl p-4 text-center">
+        <p class="text-2xl font-black text-amber-400" id="stat-streak">0</p>
+        <p class="text-[10px] uppercase tracking-wider text-gray-400 mt-1">🔥 Day Streak</p>
+      </div>
+      <div class="glass rounded-xl p-4 text-center">
+        <p class="text-2xl font-black text-emerald-400" id="stat-namaz">0%</p>
+        <p class="text-[10px] uppercase tracking-wider text-gray-400 mt-1">🕌 Namaz Comp.</p>
+      </div>
+      <div class="glass rounded-xl p-4 text-center">
+        <p class="text-2xl font-black text-cyan-400" id="stat-quran">0</p>
+        <p class="text-[10px] uppercase tracking-wider text-gray-400 mt-1">📖 Quran Pages</p>
+      </div>
     </div>
 
-    <script>
-        // BACKEND APPS SCRIPT WEB APP URL (Replace this with your deployed deployment URL)
-        const DEPLOYED_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7zr4rMFKS96ZtshaRrGRyfVWatvu1IXVw8fPAQN-yzsTDGCCyaxEI5nu0OXFjWkAv/exec";
+    <div class="grid md:grid-cols-2 gap-6">
+      
+      <div class="glass rounded-2xl p-6 space-y-5">
+        <h3 class="text-md font-semibold text-amber-400 border-b border-emerald-900/50 pb-2">Daily Entry Logging</h3>
+        
+        <div class="space-y-2.5">
+          <label class="block text-xs font-bold text-emerald-400 uppercase tracking-widest mb-1">Mark Today's Prayers</label>
+          <div class="grid grid-cols-1 gap-2">
+            <label class="flex items-center justify-between bg-[#070d0b] px-4 py-3 rounded-xl border border-emerald-900/30 cursor-pointer select-none">
+              <span class="text-sm">Subh (Fajr)</span>
+              <input type="checkbox" id="check-subh" class="w-5 h-5 accent-amber-500 rounded">
+            </label>
+            <label class="flex items-center justify-between bg-[#070d0b] px-4 py-3 rounded-xl border border-emerald-900/30 cursor-pointer select-none">
+              <span class="text-sm">Zuhr</span>
+              <input type="checkbox" id="check-zuhr" class="w-5 h-5 accent-amber-500 rounded">
+            </label>
+            <label class="flex items-center justify-between bg-[#070d0b] px-4 py-3 rounded-xl border border-emerald-900/30 cursor-pointer select-none">
+              <span class="text-sm">Asar</span>
+              <input type="checkbox" id="check-asar" class="w-5 h-5 accent-amber-500 rounded">
+            </label>
+            <label class="flex items-center justify-between bg-[#070d0b] px-4 py-3 rounded-xl border border-emerald-900/30 cursor-pointer select-none">
+              <span class="text-sm">Maghrib</span>
+              <input type="checkbox" id="check-maghrib" class="w-5 h-5 accent-amber-500 rounded">
+            </label>
+            <label class="flex items-center justify-between bg-[#070d0b] px-4 py-3 rounded-xl border border-emerald-900/30 cursor-pointer select-none">
+              <span class="text-sm">Isha</span>
+              <input type="checkbox" id="check-isha" class="w-5 h-5 accent-amber-500 rounded">
+            </label>
+          </div>
+        </div>
 
-        // Global State Objects
-        let currentStudent = null;
-        let todayNamazData = { subh: false, zuhr: false, asar: false, maghrib: false, isha: false };
-        let macroChartObj = null;
+        <div class="space-y-1.5">
+          <label class="block text-xs font-bold text-emerald-400 uppercase tracking-widest">Quran Recitation</label>
+          <input type="number" id="input-quran" min="0" class="w-full bg-[#070d0b] border border-emerald-900/50 rounded-xl px-4 py-3 focus:outline-none focus:border-amber-400 text-white" placeholder="Pages read in this sitting...">
+        </div>
 
-        document.getElementById('login-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            handleLogin();
-        });
+        <button onclick="submitDailyPerformance()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3.5 rounded-xl transition shadow-lg active:scale-95">Save & Log Metrics</button>
+      </div>
 
-        // Tab Management
-        function switchTab(targetTab) {
-            const sections = ['track', 'analytics', 'leaderboard'];
-            sections.forEach(s => {
-                document.getElementById(`${s}-section`).classList.add('hidden');
-                document.getElementById(`btn-tab-${s}`).classList.replace('text-emerald-500', 'text-slate-400');
-            });
-            
-            document.getElementById(`${targetTab}-section`).classList.remove('hidden');
-            document.getElementById(`btn-tab-${targetTab}`).classList.replace('text-slate-400', 'text-emerald-500');
+      <div class="glass rounded-2xl p-6 flex flex-col justify-between">
+        <div>
+          <h3 class="text-md font-semibold text-amber-400 border-b border-emerald-900/50 pb-2 mb-4">Monthly Performance Map</h3>
+          <div class="relative w-full h-64 flex items-center justify-center">
+            <canvas id="performanceChart"></canvas>
+          </div>
+        </div>
+        <p class="text-[11px] text-gray-500 text-center mt-4">Calculations run dynamically relative to your assigned target metrics.</p>
+      </div>
 
-            if (targetTab === 'analytics') renderAnalyticsCharts();
-            if (targetTab === 'leaderboard') fetchLeaderboard();
+    </div>
+  </div>
+
+  <script>
+    // Paste your Google Apps Script Web App Endpoint URL below
+    const API_URL = "https://script.google.com/macros/s/AKfycbw2han8-Qw-tQj3iCIo6-WNsSBPHb9qgpZUC8TfrtdzzGVWuT8sXZ3J30BXqmQCpiYz/exec";
+    
+    let currentStudentId = "";
+    let myChart = null;
+
+    function handleLogin() {
+      const student_id = document.getElementById('login-id').value.trim();
+      const password = document.getElementById('login-pass').value.trim();
+
+      if(!student_id || !password) return alert("Please fill out all login parameters.");
+
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "login", student_id, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.success) {
+          currentStudentId = student_id;
+          document.getElementById('user-name').innerText = data.name;
+          document.getElementById('login-container').classList.add('hidden');
+          document.getElementById('app-container').classList.remove('hidden');
+          fetchDashboardMetrics();
+        } else {
+          alert(data.message);
         }
+      }).catch(err => alert("Connection failure. Check your script endpoint configurations."));
+    }
 
-        // Authentication Pipeline
-        async function handleLogin() {
-            const sId = document.getElementById('login-id').value.trim();
-            const password = document.getElementById('login-pass').value;
+    function submitDailyPerformance() {
+      const subh = document.getElementById('check-subh').checked;
+      const zuhr = document.getElementById('check-zuhr').checked;
+      const asar = document.getElementById('check-asar').checked;
+      const maghrib = document.getElementById('check-maghrib').checked;
+      const isha = document.getElementById('check-isha').checked;
+      const quran_pages = document.getElementById('input-quran').value || 0;
 
-            showLoading(true);
-            try {
-                const response = await fetch(`${DEPLOYED_APPS_SCRIPT_URL}?action=login&studentId=${sId}&password=${password}`);
-                const data = await response.json();
-
-                if(data.success) {
-                    currentStudent = data.student;
-                    initializeDashboard(data.todayNamaz);
-                } else {
-                    alert("Authentication Error: " + data.message);
-                }
-            } catch (err) {
-                console.error(err);
-                alert("Failed to communicate with Rahmaniyya Database.");
-            } finally {
-                showLoading(false);
-            }
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({
+          action: "submitDaily",
+          student_id: currentStudentId,
+          subh, zuhr, asar, maghrib, isha, quran_pages
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.success) {
+          alert("Progress cataloged beautifully!");
+          document.getElementById('input-quran').value = '';
+          fetchDashboardMetrics();
         }
+      });
+    }
 
-        function initializeDashboard(namazLog) {
-            document.getElementById('login-page').classList.add('hidden');
-            document.getElementById('app-dashboard').classList.remove('hidden');
-
-            document.getElementById('user-display-name').innerText = currentStudent.name;
-            document.getElementById('streak-count').innerText = `${currentStudent.streak || 0} Days`;
-            
-            const today = new Date();
-            document.getElementById('current-date-badge').innerText = today.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-
-            if(namazLog) {
-                todayNamazData = {
-                    subh: !!namazLog.Subh,
-                    zuhr: !!namazLog.Zuhr,
-                    asar: !!namazLog.Asar,
-                    maghrib: !!namazLog.Maghrib,
-                    isha: !!namazLog.Isha
-                };
-            }
-            renderNamazCheckboxes();
+    function fetchDashboardMetrics() {
+      fetch(API_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "getDashboardData", student_id: currentStudentId })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.success) {
+          document.getElementById('stat-streak').innerText = data.streak;
+          document.getElementById('stat-namaz').innerText = data.completionRate + "%";
+          document.getElementById('stat-quran').innerText = data.quranPages;
+          renderChart(data.completionRate, 100 - data.completionRate);
         }
+      });
+    }
 
-        function renderNamazCheckboxes() {
-            const prayers = ['Subh', 'Zuhr', 'Asar', 'Maghrib', 'Isha'];
-            const container = document.getElementById('namaz-checkbox-group');
-            container.innerHTML = '';
-
-            prayers.forEach(p => {
-                const key = p.toLowerCase();
-                const isChecked = todayNamazData[key];
-                
-                const elementRow = document.createElement('label');
-                elementRow.className = `flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer ${isChecked ? 'bg-emerald-950/40 border-emerald-600 text-emerald-300' : 'bg-slate-900 border-slate-700 text-slate-400'}`;
-                elementRow.innerHTML = `
-                    <span class="text-xs font-semibold tracking-wider">${p}</span>
-                    <input type="checkbox" class="w-4 h-4 accent-emerald-500 rounded" ${isChecked ? 'checked' : ''} onchange="toggleLocalNamazStatus('${key}', this.checked)">
-                `;
-                container.appendChild(elementRow);
-            });
+    function renderChart(completed, remaining) {
+      const ctx = document.getElementById('performanceChart').getContext('2d');
+      if(myChart) myChart.destroy();
+      
+      myChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Completed Prayers', 'Remaining Base Target'],
+          datasets: [{
+            data: [completed, remaining === 100 ? 100 : Math.max(0, remaining)],
+            backgroundColor: ['#10b981', '#1e293b'],
+            borderColor: ['#f59e0b', 'transparent'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
         }
+      });
+    }
 
-        function toggleLocalNamazStatus(prayerKey, value) {
-            todayNamazData[prayerKey] = value;
-        }
-
-        // Submissions 
-        async function submitNamaz() {
-            showLoading(true);
-            try {
-                const queryParams = new URLSearchParams({
-                    action: 'logNamaz',
-                    studentId: currentStudent.studentId,
-                    ...todayNamazData
-                });
-                const response = await fetch(`${DEPLOYED_APPS_SCRIPT_URL}?${queryParams.toString()}`, { method: 'POST' });
-                const result = await response.json();
-                if(result.success) alert("Namaz status processed successfully.");
-            } catch (e) {
-                alert("Error submitting data.");
-            } finally { showLoading(false); renderNamazCheckboxes(); }
-        }
-
-        async function submitQuran() {
-            const pages = document.getElementById('quran-pages').value;
-            const note = document.getElementById('quran-note').value;
-            if(!pages || pages < 1) return alert("Please clarify total pages completed.");
-
-            showLoading(true);
-            try {
-                const queryParams = new URLSearchParams({
-                    action: 'logQuran',
-                    studentId: currentStudent.studentId,
-                    pages: pages,
-                    note: note
-                });
-                const response = await fetch(`${DEPLOYED_APPS_SCRIPT_URL}?${queryParams.toString()}`, { method: 'POST' });
-                const result = await response.json();
-                if(result.success) {
-                    alert(`Logged ${pages} pages cleanly.`);
-                    document.getElementById('quran-pages').value = '';
-                    document.getElementById('quran-note').value = '';
-                }
-            } catch (e) {
-                alert("Submission failed.");
-            } finally { showLoading(false); }
-        }
-
-        // Analytics Visuals
-        async function renderAnalyticsCharts() {
-            try {
-                const response = await fetch(`${DEPLOYED_APPS_SCRIPT_URL}?action=getAnalytics&studentId=${currentStudent.studentId}`);
-                const data = await response.json();
-
-                document.getElementById('analytics-namaz-pct').innerText = `${data.namazPercentage}%`;
-                document.getElementById('analytics-quran-total').innerText = data.totalQuranPages;
-
-                if (macroChartObj) macroChartObj.destroy();
-                const ctx = document.getElementById('namazChart').getContext('2d');
-                macroChartObj = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Completed Prayers', 'Missed Prayers'],
-                        datasets: [{
-                            data: [data.namazPercentage, 100 - data.namazPercentage],
-                            backgroundColor: ['#047857', '#334155'],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
-                });
-            } catch (e) { console.error("Error loading metrics charts.", e); }
-        }
-
-        // Leaderboard Generation
-        async function fetchLeaderboard() {
-            const tableBody = document.getElementById('leaderboard-entries');
-            tableBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500">Recalculating standings...</td></tr>`;
-            try {
-                const r = await fetch(`${DEPLOYED_APPS_SCRIPT_URL}?action=getLeaderboard`);
-                const rankData = await r.json();
-                tableBody.innerHTML = '';
-                
-                rankData.forEach((row, index) => {
-                    const rowMarkup = `
-                        <tr class="${row.studentId === currentStudent.studentId ? 'bg-emerald-950/30 text-emerald-300 font-bold' : ''}">
-                            <td class="p-3 text-center text-slate-400">${index + 1}</td>
-                            <td class="p-3">${row.name}</td>
-                            <td class="p-3 text-center text-emerald-400">${row.namazPercentage}%</td>
-                            <td class="p-3 text-center text-amber-400">${row.totalQuranPages}</td>
-                        </tr>`;
-                    tableBody.insertAdjacentHTML('beforeend', rowMarkup);
-                });
-            } catch (e) { tableBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-rose-400">Failed to pull leaderboard profiles.</td></tr>`; }
-        }
-
-        function logout() { location.reload(); }
-        function showLoading(state) { /* Optional: Add overlay animation hook */ }
-    </script>
+    function logout() {
+      location.reload();
+    }
+  </script>
 </body>
 </html>
