@@ -1,218 +1,340 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rahmaniyya Student Portal - Minimalist</title>
+    <title>Rahmaniyya Suite - Premium Islamic Analytics</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Playfair Display', 'serif'] },
+                    colors: {
+                        emerald: { 50: '#f0fdf4', 100: '#dcfce7', 600: '#16a34a', 700: '#15803d', 800: '#166534', 900: '#14532d' },
+                        gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706' }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 10px; }
+        body { -webkit-tap-highlight-color: transparent; }
+    </style>
 </head>
-<body class="bg-stone-50 text-stone-800 font-sans antialiased">
+<body class="bg-stone-100 dark:bg-stone-950 text-stone-800 dark:text-stone-100 min-h-screen font-sans transition-colors duration-300">
 
-    <!-- LOGIN SCREEN -->
-    <div id="login-page" class="min-h-screen flex items-center justify-center p-6">
-        <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-200/60 w-full max-w-sm">
+    <div id="login-page" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-stone-900 p-8 rounded-3xl shadow-xl border border-stone-200 dark:border-stone-800 w-full max-w-sm transition-transform duration-300 transform scale-100">
             <div class="text-center mb-8">
-                <span class="text-xs uppercase font-bold tracking-widest text-stone-400 block mb-2">Rahmaniyya</span>
-                <h1 class="text-3xl font-serif text-stone-900">Student Portal</h1>
-                <p class="text-stone-500 text-xs mt-1">Sign in to update your daily status</p>
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 mb-3 text-xl">
+                    <i class="fa-solid fa-mosque"></i>
+                </div>
+                <span class="text-xs uppercase font-bold tracking-widest text-emerald-600 dark:text-emerald-400 block mb-1">Rahmaniyya</span>
+                <h1 class="text-2xl font-serif font-bold text-stone-900 dark:text-white">Student Portal Suite</h1>
+                <p class="text-stone-500 dark:text-stone-400 text-xs mt-1">Access metrics, updates, and analytics rankings</p>
             </div>
-            <form id="login-form" class="space-y-5">
+            <form id="login-form" class="space-y-4">
                 <div>
-                    <input type="text" id="student-id" placeholder="Student ID" required class="w-full px-4 py-3.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-1 focus:ring-stone-600 bg-stone-50/50 transition placeholder-stone-400 text-sm">
+                    <input type="text" id="student-id" placeholder="Student ID" required class="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/50 text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition text-sm">
                 </div>
                 <div>
-                    <input type="password" id="password" placeholder="Password" required class="w-full px-4 py-3.5 rounded-xl border border-stone-200 focus:outline-none focus:ring-1 focus:ring-stone-600 bg-stone-50/50 transition placeholder-stone-400 text-sm">
+                    <input type="password" id="password" placeholder="Password" required class="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/50 text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition text-sm">
                 </div>
-                <button type="submit" class="w-full bg-stone-900 hover:bg-stone-800 text-white font-medium py-3.5 rounded-xl transition duration-200 text-sm tracking-wide">Enter Dashboard</button>
+                <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-600 text-white font-medium py-3 rounded-xl transition duration-200 text-sm tracking-wide shadow-md shadow-emerald-700/10">Sign In</button>
             </form>
         </div>
     </div>
 
-    <!-- MAIN DASHBOARD -->
-    <div id="dashboard" class="hidden min-h-screen max-w-md mx-auto bg-white border-x border-stone-200 shadow-xl flex flex-col justify-between">
+    <div id="app-dashboard" class="hidden min-h-screen max-w-md mx-auto bg-stone-50 dark:bg-stone-900 shadow-2xl flex flex-col justify-between border-x border-stone-200 dark:border-stone-800 relative">
         
-        <!-- Header / Stats Ring Section -->
-        <header class="p-6 border-b border-stone-100 bg-stone-50/50">
-            <div class="flex justify-between items-start mb-6">
+        <header class="p-4 border-b border-stone-200 dark:border-stone-800 sticky top-0 bg-stone-50/90 dark:bg-stone-900/90 backdrop-blur z-40 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-lg bg-emerald-700 text-white flex items-center justify-center text-xs"><i class="fa-solid fa-star-and-crescent"></i></div>
                 <div>
-                    <h2 id="user-display-name" class="font-serif text-2xl text-stone-900">Muhammed</h2>
-                    <p class="text-xs text-stone-400">Daily Progress & Analytics</p>
-                </div>
-                <button onclick="logout()" class="text-stone-400 hover:text-stone-900 transition text-sm">
-                    Logout <i class="fa-solid fa-arrow-right-from-bracket ml-1"></i>
-                </button>
-            </div>
-
-            <!-- Sleek Metrics Strip -->
-            <div class="grid grid-cols-3 gap-2 bg-white p-3 rounded-2xl border border-stone-200/60 text-center">
-                <div>
-                    <span class="text-[10px] uppercase font-bold tracking-wider text-stone-400 block">Streak</span>
-                    <span id="stat-streak" class="font-serif text-lg text-stone-800">12 Days</span>
-                </div>
-                <div class="border-x border-stone-100">
-                    <span class="text-[10px] uppercase font-bold tracking-wider text-stone-400 block">Namaz</span>
-                    <span id="stat-namaz-pct" class="font-serif text-lg text-emerald-700">92%</span>
-                </div>
-                <div>
-                    <span class="text-[10px] uppercase font-bold tracking-wider text-stone-400 block">Class Rank</span>
-                    <span id="stat-rank" class="font-serif text-lg text-stone-800">#2</span>
+                    <h2 id="header-user-title" class="font-serif font-bold text-sm text-stone-900 dark:text-white">Student Hub</h2>
+                    <p id="system-date-label" class="text-[10px] text-stone-400">Loading timestamp...</p>
                 </div>
             </div>
-
-            <!-- Single Line Target Progress Bar -->
-            <div class="mt-4">
-                <div class="flex justify-between text-xs text-stone-500 mb-1">
-                    <span>Monthly Target Achieved</span>
-                    <span id="progress-text" class="font-bold">92%</span>
-                </div>
-                <div class="w-full bg-stone-200 h-1.5 rounded-full overflow-hidden">
-                    <div id="progress-bar-fill" class="bg-emerald-600 h-full transition-all duration-500" style="width: 92%"></div>
-                </div>
+            <div class="flex items-center space-x-3">
+                <button onclick="toggleTheme()" class="w-8 h-8 rounded-full bg-stone-200 dark:bg-stone-800 text-stone-600 dark:text-stone-300 flex items-center justify-center text-xs hover:scale-105 transition"><i class="fa-solid fa-moon dark:hidden"></i><i class="fa-solid fa-sun hidden dark:block"></i></button>
+                <button onclick="logout()" class="text-xs text-red-500 hover:text-red-400 font-medium"><i class="fa-solid fa-power-off text-base"></i></button>
             </div>
         </header>
 
-        <!-- Dynamic Tracking Feed Container -->
-        <main class="p-6 space-y-6 flex-1 overflow-y-auto">
+        <main class="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar pb-24">
             
-            <!-- NAMAZ COMPLIANCE: Elegant Checklist List layout -->
-            <div>
-                <h3 class="text-xs uppercase font-bold tracking-widest text-stone-400 mb-3">Today's Prayers</h3>
-                <div class="space-y-2.5" id="namaz-feed">
-                    
-                    <!-- Subh Row -->
-                    <div onclick="togglePrayerRow(this, 'subh')" class="group flex items-center justify-between p-3.5 rounded-xl border border-stone-100 bg-stone-50 hover:bg-stone-100/70 transition cursor-pointer">
-                        <div class="flex items-center space-x-3">
-                            <span class="text-xs font-bold text-stone-400 group-hover:text-stone-600 w-8">05:15</span>
-                            <span class="text-sm font-medium text-stone-800">Subh (Fajr)</span>
-                        </div>
-                        <i class="fa-regular fa-circle text-stone-300 text-lg transition-transform group-hover:scale-110"></i>
+            <div id="view-home" class="space-y-5 view-pane">
+                <div class="grid grid-cols-4 gap-2">
+                    <div class="bg-white dark:bg-stone-800/60 p-2.5 rounded-xl border border-stone-200 dark:border-stone-800 text-center shadow-sm">
+                        <span class="text-[9px] uppercase font-bold tracking-wider text-stone-400 block mb-0.5">Streak</span>
+                        <span id="card-streak" class="font-serif font-bold text-stone-900 dark:text-emerald-400">0 Days</span>
                     </div>
-
-                    <!-- Zuhr Row -->
-                    <div onclick="togglePrayerRow(this, 'zuhr')" class="group flex items-center justify-between p-3.5 rounded-xl border border-stone-100 bg-stone-50 hover:bg-stone-100/70 transition cursor-pointer">
-                        <div class="flex items-center space-x-3">
-                            <span class="text-xs font-bold text-stone-400 group-hover:text-stone-600 w-8">12:30</span>
-                            <span class="text-sm font-medium text-stone-800">Zuhr</span>
-                        </div>
-                        <i class="fa-regular fa-circle text-stone-300 text-lg transition-transform group-hover:scale-110"></i>
+                    <div class="bg-white dark:bg-stone-800/60 p-2.5 rounded-xl border border-stone-200 dark:border-stone-800 text-center shadow-sm">
+                        <span class="text-[9px] uppercase font-bold tracking-wider text-stone-400 block mb-0.5">Namaz %</span>
+                        <span id="card-namaz" class="font-serif font-bold text-emerald-600 dark:text-emerald-400">0%</span>
                     </div>
-
-                    <!-- Asar Row -->
-                    <div onclick="togglePrayerRow(this, 'asar')" class="group flex items-center justify-between p-3.5 rounded-xl border border-stone-100 bg-stone-50 hover:bg-stone-100/70 transition cursor-pointer">
-                        <div class="flex items-center space-x-3">
-                            <span class="text-xs font-bold text-stone-400 group-hover:text-stone-600 w-8">03:45</span>
-                            <span class="text-sm font-medium text-stone-800">Asar</span>
-                        </div>
-                        <i class="fa-regular fa-circle text-stone-300 text-lg transition-transform group-hover:scale-110"></i>
+                    <div class="bg-white dark:bg-stone-800/60 p-2.5 rounded-xl border border-stone-200 dark:border-stone-800 text-center shadow-sm">
+                        <span class="text-[9px] uppercase font-bold tracking-wider text-stone-400 block mb-0.5">Quran Count</span>
+                        <span id="card-quran" class="font-serif font-bold text-stone-900 dark:text-white">0 pgs</span>
                     </div>
-
-                    <!-- Maghrib Row -->
-                    <div onclick="togglePrayerRow(this, 'maghrib')" class="group flex items-center justify-between p-3.5 rounded-xl border border-stone-100 bg-stone-50 hover:bg-stone-100/70 transition cursor-pointer">
-                        <div class="flex items-center space-x-3">
-                            <span class="text-xs font-bold text-stone-400 group-hover:text-stone-600 w-8">06:40</span>
-                            <span class="text-sm font-medium text-stone-800">Maghrib</span>
-                        </div>
-                        <i class="fa-regular fa-circle text-stone-300 text-lg transition-transform group-hover:scale-110"></i>
+                    <div class="bg-white dark:bg-stone-800/60 p-2.5 rounded-xl border border-stone-200 dark:border-stone-800 text-center shadow-sm">
+                        <span class="text-[9px] uppercase font-bold tracking-wider text-stone-400 block mb-0.5">Class Rank</span>
+                        <span id="card-rank" class="font-serif font-bold text-gold-500">#0</span>
                     </div>
+                </div>
 
-                    <!-- Isha Row -->
-                    <div onclick="togglePrayerRow(this, 'isha')" class="group flex items-center justify-between p-3.5 rounded-xl border border-stone-100 bg-stone-50 hover:bg-stone-100/70 transition cursor-pointer">
-                        <div class="flex items-center space-x-3">
-                            <span class="text-xs font-bold text-stone-400 group-hover:text-stone-600 w-8">08:00</span>
-                            <span class="text-sm font-medium text-stone-800">Isha</span>
-                        </div>
-                        <i class="fa-regular fa-circle text-stone-300 text-lg transition-transform group-hover:scale-110"></i>
+                <div>
+                    <h3 class="text-xs uppercase font-bold tracking-widest text-stone-400 dark:text-stone-500 mb-2.5 flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-emerald-600"></i> Daily Prayers</h3>
+                    <div class="space-y-2" id="prayer-feed-list"></div>
+                </div>
+
+                <div class="bg-white dark:bg-stone-800/60 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-xs uppercase font-bold tracking-widest text-stone-400 dark:text-stone-500 flex items-center gap-1.5"><i class="fa-solid fa-book-quran text-emerald-600"></i> Quran Ledger</h3>
+                        <span class="text-[11px] text-stone-500">Logged Today: <span id="quran-today-badge" class="font-bold text-emerald-600">0</span> pages</span>
                     </div>
-
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center bg-stone-100 dark:bg-stone-900 rounded-xl p-1 border border-stone-200 dark:border-stone-700">
+                            <button onclick="adjustCounter(-1)" class="w-9 h-9 rounded-lg bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-200 font-bold hover:bg-stone-200 dark:hover:bg-stone-700 transition shadow-sm text-sm">-</button>
+                            <input type="number" id="quran-val-input" value="1" min="1" class="w-12 text-center bg-transparent font-bold text-stone-900 dark:text-white focus:outline-none text-sm">
+                            <button onclick="adjustCounter(1)" class="w-9 h-9 rounded-lg bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-200 font-bold hover:bg-stone-200 dark:hover:bg-stone-700 transition shadow-sm text-sm">+</button>
+                        </div>
+                        <button onclick="submitQuranLog()" class="flex-1 bg-stone-900 dark:bg-emerald-700 hover:bg-stone-800 dark:hover:bg-emerald-600 text-white text-xs font-semibold py-3 px-4 rounded-xl transition shadow-md">Post Pages Entry</button>
+                    </div>
                 </div>
             </div>
 
-            <!-- QURAN SECTION: Incremental Quick Counter layout -->
-            <div class="pt-2">
-                <div class="flex justify-between items-center mb-3">
-                    <h3 class="text-xs uppercase font-bold tracking-widest text-stone-400">Quran Recitation</h3>
-                    <span class="text-xs text-stone-500 font-medium">Logged today: <span id="stat-quran-count" class="font-bold text-stone-800">14</span> pages</span>
+            <div id="view-analytics" class="hidden space-y-5 view-pane">
+                <h3 class="text-sm font-serif font-bold text-stone-900 dark:text-white">Performance Analytics Graphs</h3>
+                <div class="bg-white dark:bg-stone-800 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm">
+                    <canvas id="analyticsChart" class="w-full"></canvas>
                 </div>
-                <div class="bg-stone-50 p-4 rounded-xl border border-stone-200/60 flex items-center justify-between">
-                    <div class="flex items-center space-x-2">
-                        <button onclick="adjustQuranCounter(-1)" class="w-8 h-8 rounded-lg border border-stone-300 bg-white hover:bg-stone-100 font-bold text-sm text-stone-600 transition">-</button>
-                        <input type="number" id="quran-counter-input" value="1" min="1" class="w-12 text-center bg-transparent font-serif font-bold text-lg text-stone-800 focus:outline-none">
-                        <button onclick="adjustQuranCounter(1)" class="w-8 h-8 rounded-lg border border-stone-300 bg-white hover:bg-stone-100 font-bold text-sm text-stone-600 transition">+</button>
+                <div class="bg-white dark:bg-stone-800 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm space-y-3">
+                    <h4 class="text-xs uppercase font-bold text-stone-400">Monthly Targets Calculation Summary</h4>
+                    <div class="flex justify-between items-center text-xs border-b border-stone-100 dark:border-stone-700 pb-2">
+                        <span class="text-stone-500">Namaz Target Evaluation</span>
+                        <span id="target-namaz-lbl" class="font-bold text-emerald-600">0% / 100%</span>
                     </div>
-                    <button onclick="logQuranPages()" class="bg-stone-900 hover:bg-stone-800 text-white text-xs font-medium px-4 py-2.5 rounded-lg transition tracking-wide shadow-sm">
-                        Log Entry
-                    </button>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-stone-500">Quran Pages Milestone Tracking</span>
+                        <span id="target-quran-lbl" class="font-bold text-stone-800 dark:text-stone-200">0 Pages Total</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-leaderboard" class="hidden space-y-4 view-pane">
+                <div>
+                    <h3 class="text-sm font-serif font-bold text-stone-900 dark:text-white">Top 10 High Achievement Board</h3>
+                    <p class="text-[11px] text-stone-400">Calculated dynamically from Monthly aggregations</p>
+                </div>
+                <div class="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-800 overflow-hidden shadow-sm">
+                    <div class="bg-stone-100 dark:bg-stone-700/40 p-3 text-xs grid grid-cols-12 font-bold text-stone-500 tracking-wide uppercase">
+                        <span class="col-span-2 text-center">Rank</span>
+                        <span class="col-span-6">Student</span>
+                        <span class="col-span-2 text-center">Namaz</span>
+                        <span class="col-span-2 text-center">Quran</span>
+                    </div>
+                    <div id="leaderboard-target-box" class="divide-y divide-stone-100 dark:divide-stone-700">
+                        </div>
+                </div>
+            </div>
+
+            <div id="view-profile" class="hidden space-y-4 view-pane">
+                <div class="bg-white dark:bg-stone-800 p-6 rounded-2xl border border-stone-200 dark:border-stone-800 text-center shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 dark:bg-emerald-500/10 rounded-bl-full pointer-events-none"></div>
+                    <div class="w-16 h-16 rounded-full bg-stone-100 dark:bg-stone-700 mx-auto mb-3 flex items-center justify-center text-stone-400 text-2xl font-bold border border-stone-200 dark:border-stone-600" id="profile-initials">M</div>
+                    <h3 id="profile-name" class="font-serif font-bold text-lg text-stone-900 dark:text-white">---</h3>
+                    <p id="profile-id" class="text-xs text-stone-400 mt-0.5">ID: ---</p>
+                    <div class="mt-4 pt-4 border-t border-stone-100 dark:border-stone-700 grid grid-cols-2 gap-2 text-left">
+                        <div class="p-2 bg-stone-50 dark:bg-stone-900 rounded-xl"><span class="text-[10px] text-stone-400 uppercase block">Account Role</span><span id="profile-role" class="text-xs font-semibold text-stone-800 dark:text-stone-200">Student</span></div>
+                        <div class="p-2 bg-stone-50 dark:bg-stone-900 rounded-xl"><span class="text-[10px] text-stone-400 uppercase block">Current Tier</span><span id="profile-tier" class="text-xs font-semibold text-gold-600">Active Competitor</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-admin" class="hidden space-y-4 view-pane">
+                <div class="border-b border-stone-200 dark:border-stone-800 pb-2">
+                    <h3 class="text-sm font-serif font-bold text-red-600 dark:text-red-400 flex items-center gap-1.5"><i class="fa-solid fa-sliders"></i> Central Administrative Panel</h3>
+                    <p class="text-[11px] text-stone-400">Authorized configuration adjustments and overrides</p>
+                </div>
+                <div class="bg-white dark:bg-stone-800 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 space-y-4 shadow-sm">
+                    <h4 class="text-xs font-bold text-stone-700 dark:text-stone-300 uppercase tracking-wider">System-Wide Configurations</h4>
+                    <div class="flex items-center justify-between p-2.5 bg-stone-50 dark:bg-stone-900 rounded-xl border border-stone-100 dark:border-stone-800">
+                        <div>
+                            <span class="text-xs font-semibold block">Ramadan Protocol Scale</span>
+                            <span class="text-[10px] text-stone-400">Modifies point calculations globally</span>
+                        </div>
+                        <button onclick="toggleAdminSetting('Ramadan_Mode')" id="btn-ramadan-mode" class="px-3 py-1 bg-stone-300 dark:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-bold rounded-lg transition">Disabled</button>
+                    </div>
+                </div>
+                <div class="bg-white dark:bg-stone-800 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 space-y-3 shadow-sm">
+                    <h4 class="text-xs font-bold text-stone-700 dark:text-stone-300 uppercase tracking-wider">Student Registration Overrides</h4>
+                    <div class="space-y-2 text-xs">
+                        <input type="text" id="admin-reg-id" placeholder="New Student ID" class="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-transparent text-stone-900 dark:text-white focus:outline-none">
+                        <input type="password" id="admin-reg-pass" placeholder="Password" class="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-transparent text-stone-900 dark:text-white focus:outline-none">
+                        <input type="text" id="admin-reg-name" placeholder="Full Student Name" class="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-transparent text-stone-900 dark:text-white focus:outline-none">
+                        <button onclick="executeAdminRegistration()" class="w-full bg-emerald-700 text-white font-medium py-2.5 rounded-lg transition hover:bg-emerald-600">Register Account</button>
+                    </div>
                 </div>
             </div>
 
         </main>
 
-        <!-- Footer Branding Contact -->
-        <footer class="p-4 border-t border-stone-100 text-center text-[11px] text-stone-400 tracking-wide bg-stone-50/50">
-            For access adjustments contact: <span class="font-medium text-stone-600">rahmaniyyaakm@gmail.com</span>
-        </footer>
+        <nav class="absolute bottom-0 left-0 right-0 border-t border-stone-200 dark:border-stone-800 bg-white/95 dark:bg-stone-900/95 backdrop-blur z-40 p-2 flex justify-around items-center">
+            <button onclick="switchView('home')" id="nav-btn-home" class="flex flex-col items-center space-y-1 text-emerald-600 dark:text-emerald-400 transition transform duration-150 active:scale-95"><i class="fa-solid fa-house text-base"></i><span class="text-[9px] tracking-tight font-medium">Home</span></button>
+            <button onclick="switchView('analytics')" id="nav-btn-analytics" class="flex flex-col items-center space-y-1 text-stone-400 dark:text-stone-500 transition transform duration-150 active:scale-95"><i class="fa-solid fa-chart-line text-base"></i><span class="text-[9px] tracking-tight font-medium">Analytics</span></button>
+            <button onclick="switchView('leaderboard')" id="nav-btn-leaderboard" class="flex flex-col items-center space-y-1 text-stone-400 dark:text-stone-500 transition transform duration-150 active:scale-95"><i class="fa-solid fa-trophy text-base"></i><span class="text-[9px] tracking-tight font-medium">Rankings</span></button>
+            <button onclick="switchView('profile')" id="nav-btn-profile" class="flex flex-col items-center space-y-1 text-stone-400 dark:text-stone-500 transition transform duration-150 active:scale-95"><i class="fa-solid fa-user text-base"></i><span class="text-[9px] tracking-tight font-medium">Profile</span></button>
+            <button onclick="switchView('admin')" id="nav-btn-admin" class="hidden flex flex-col items-center space-y-1 text-red-400 transition transform duration-150 active:scale-95"><i class="fa-solid fa-user-gear text-base"></i><span class="text-[9px] tracking-tight font-medium">Admin</span></button>
+        </nav>
     </div>
 
-    <!-- CORE JAVASCRIPT APP FUNCTIONS -->
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbx7zr4rMFKS96ZtshaRrGRyfVWatvu1IXVw8fPAQN-yzsTDGCCyaxEI5nu0OXFjWkAv/exec"; 
+        const API_URL = "https://script.google.com/macros/s/AKfycbx7zr4rMFKS96ZtshaRrGRyfVWatvu1IXVw8fPAQN-yzsTDGCCyaxEI5nu0OXFjWkAv/exec";
         let currentStudentId = "";
+        let currentStudentToken = "";
+        let globalUserRole = "Student";
+        let globalChartRef = null;
 
-        document.getElementById('login-form').addEventListener('submit', (e) => {
+        const prayersMeta = [
+            { id: 'subh', label: 'Subh (Fajr)', time: '05:15' },
+            { id: 'zuhr', label: 'Zuhr', time: '12:30' },
+            { id: 'asar', label: 'Asar', time: '15:45' },
+            { id: 'maghrib', label: 'Maghrib', time: '18:40' },
+            { id: 'isha', label: 'Isha', time: '20:00' }
+        ];
+
+        document.getElementById('system-date-label').innerText = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' });
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            currentStudentId = document.getElementById('student-id').value;
+            const idInput = document.getElementById('student-id').value.trim();
+            const passInput = document.getElementById('password').value;
             
-            document.getElementById('user-display-name').innerText = currentStudentId;
-            document.getElementById('login-page').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
-            
-            fetchAnalytics();
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'login', studentId: idInput, password: passInput })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    currentStudentId = idInput;
+                    globalUserRole = data.role || "Student";
+                    
+                    document.getElementById('header-user-title').innerText = data.name;
+                    document.getElementById('profile-name').innerText = data.name;
+                    document.getElementById('profile-id').innerText = "ID: " + idInput;
+                    document.getElementById('profile-role').innerText = globalUserRole;
+                    document.getElementById('profile-initials').innerText = data.name.charAt(0).toUpperCase();
+
+                    if(globalUserRole === "Admin") {
+                        document.getElementById('nav-btn-admin').classList.remove('hidden');
+                    }
+
+                    document.getElementById('login-page').classList.add('hidden');
+                    document.getElementById('app-dashboard').classList.remove('hidden');
+                    
+                    buildPrayerFeed({});
+                    await synchronizeCorePayload();
+                } else {
+                    alert(data.message || "Credential validation mismatch.");
+                }
+            } catch (err) {
+                alert("Core server network bridge fault. Try logging in again.");
+            }
         });
 
-        async function togglePrayerRow(row, prayerName) {
-            const icon = row.querySelector('i');
-            const isCompleted = icon.classList.contains('fa-solid');
+        function buildPrayerFeed(statusObject) {
+            const container = document.getElementById('prayer-feed-list');
+            container.innerHTML = "";
+            prayersMeta.forEach(p => {
+                const active = statusObject[p.id] === 1;
+                const block = document.createElement('div');
+                block.className = `group flex items-center justify-between p-3.5 rounded-xl border transition cursor-pointer ${
+                    active ? 'bg-emerald-50/60 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800/80' : 'bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700/60'
+                }`;
+                block.onclick = () => dispatchPrayerToggle(p.id, active ? 0 : 1);
+                block.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <span class="text-[11px] font-bold text-stone-400 tracking-wide">${p.time}</span>
+                        <span class="text-xs font-semibold ${active ? 'text-emerald-900 dark:text-emerald-300' : 'text-stone-700 dark:text-stone-300'}">${p.label}</span>
+                    </div>
+                    <i class="${active ? 'fa-solid fa-circle-check text-emerald-600' : 'fa-regular fa-circle text-stone-300 dark:text-stone-600'} text-lg transition-transform group-hover:scale-105"></i>
+                `;
+                container.appendChild(block);
+            });
+        }
 
-            if (!isCompleted) {
-                // UI Completed State change
-                row.classList.remove('bg-stone-50', 'border-stone-100');
-                row.classList.add('bg-emerald-50/40', 'border-emerald-200/60');
-                icon.className = "fa-solid fa-circle-check text-emerald-600 text-lg animate-[scale_0.2s_ease-in-out]";
-            } else {
-                // Return row to uncompleted state
-                row.classList.add('bg-stone-50', 'border-stone-100');
-                row.classList.remove('bg-emerald-50/40', 'border-emerald-200/60');
-                icon.className = "fa-regular fa-circle text-stone-300 text-lg";
+        async function synchronizeCorePayload() {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'getAnalytics', studentId: currentStudentId })
+                });
+                const data = await response.json();
+                if(data.success) {
+                    // Update main dynamic display components
+                    document.getElementById('card-namaz').innerText = (data.stats.namazPct || 0) + "%";
+                    document.getElementById('card-quran').innerText = (data.stats.quranCount || 0) + " pgs";
+                    document.getElementById('card-streak').innerText = (data.stats.streak || 0) + " Days";
+                    document.getElementById('card-rank').innerText = "#" + (data.stats.rank || "N/A");
+                    document.getElementById('quran-today-badge').innerText = data.stats.quranToday || 0;
+                    
+                    document.getElementById('target-namaz-lbl').innerText = (data.stats.namazPct || 0) + "% / 100%";
+                    document.getElementById('target-quran-lbl').innerText = (data.stats.quranCount || 0) + " Pages Absolute";
+
+                    buildPrayerFeed(data.stats.dailyNamaz || {});
+                    renderAnalyticsChart(data.historical || []);
+                    renderLeaderboard(data.leaderboard || []);
+                    
+                    if(data.settings) {
+                        const ramadanBtn = document.getElementById('btn-ramadan-mode');
+                        if(data.settings.Ramadan_Mode === "true") {
+                            ramadanBtn.innerText = "Active";
+                            ramadanBtn.className = "px-3 py-1 bg-emerald-600 text-white text-xs font-bold rounded-lg transition";
+                        } else {
+                            ramadanBtn.innerText = "Disabled";
+                            ramadanBtn.className = "px-3 py-1 bg-stone-300 dark:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-bold rounded-lg transition";
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error("Critical tracking data sync error", err);
             }
+        }
 
-            // Fire and Forget Sync with dynamic key generation to target the sheet backend
+        async function dispatchPrayerToggle(prayerName, targetState) {
+            // Optimistic view modification updates layout instantly
             await fetch(API_URL, {
                 method: 'POST',
-                mode: 'no-cors',
                 body: JSON.stringify({
                     action: 'updateStatus',
                     type: 'namaz',
                     studentId: currentStudentId,
-                    [prayerName]: !isCompleted ? 1 : 0
+                    prayer: prayerName,
+                    value: targetState
                 })
             });
+            await synchronizeCorePayload();
         }
 
-        function adjustQuranCounter(amount) {
-            const input = document.getElementById('quran-counter-input');
-            let val = parseInt(input.value) + amount;
-            if (val < 1) val = 1;
-            input.value = val;
+        function adjustCounter(amt) {
+            const el = document.getElementById('quran-val-input');
+            let computed = parseInt(el.value) + amt;
+            if(computed < 1) computed = 1;
+            el.value = computed;
         }
 
-        async function logQuranPages() {
-            const input = document.getElementById('quran-counter-input');
-            const val = parseInt(input.value);
-            
+        async function submitQuranLog() {
+            const val = parseInt(document.getElementById('quran-val-input').value);
             await fetch(API_URL, {
                 method: 'POST',
-                mode: 'no-cors',
                 body: JSON.stringify({
                     action: 'updateStatus',
                     type: 'quran',
@@ -220,33 +342,99 @@
                     quran: val
                 })
             });
-
-            alert(`${val} pages added successfully.`);
-            fetchAnalytics();
+            alert(`Logged ${val} pages successfully.`);
+            await synchronizeCorePayload();
         }
 
-        async function fetchAnalytics() {
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'getAnalytics', studentId: currentStudentId })
-                });
-                const data = await response.json();
-                if(data.success && data.stats) {
-                    document.getElementById('stat-namaz-pct').innerText = data.stats.namazPct + "%";
-                    document.getElementById('stat-quran-count').innerText = data.stats.quranCount;
-                    document.getElementById('stat-streak').innerText = data.stats.streak + " Days";
-                    document.getElementById('stat-rank').innerText = "#" + data.stats.rank;
-                    document.getElementById('progress-text').innerText = data.stats.namazPct + "%";
-                    document.getElementById('progress-bar-fill').style.width = data.stats.namazPct + "%";
+        function renderAnalyticsChart(historicalData) {
+            const ctx = document.getElementById('analyticsChart').getContext('2d');
+            const labels = historicalData.map(d => d.date);
+            const namazDataset = historicalData.map(d => d.namazCount);
+            const quranDataset = historicalData.map(d => d.quranCount);
+
+            if (globalChartRef) { globalChartRef.destroy(); }
+
+            globalChartRef = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Prayers Checked', data: namazDataset, borderColor: '#16a34a', tension: 0.2, yAxisID: 'y' },
+                        { label: 'Pages Recited', data: quranDataset, borderColor: '#fbbf24', tension: 0.2, yAxisID: 'y1' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { type: 'linear', display: true, position: 'left', min: 0, max: 5 },
+                        y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false } }
+                    }
                 }
-            } catch (err) {
-                console.log("Portal UI layout running smoothly.");
-            }
+            });
+        }
+
+        function renderLeaderboard(boardData) {
+            const box = document.getElementById('leaderboard-target-box');
+            box.innerHTML = "";
+            boardData.forEach((row, i) => {
+                const element = document.createElement('div');
+                element.className = "p-3 grid grid-cols-12 text-xs items-center hover:bg-stone-50 dark:hover:bg-stone-800/40 transition";
+                element.innerHTML = `
+                    <span class="col-span-2 text-center font-bold text-stone-500">${i+1}</span>
+                    <span class="col-span-6 font-medium text-stone-900 dark:text-stone-100">${row.name}</span>
+                    <span class="col-span-2 text-center text-emerald-600 font-bold">${row.namazPct}%</span>
+                    <span class="col-span-2 text-center text-stone-600 dark:text-stone-300 font-bold">${row.quranCount}</span>
+                `;
+                box.appendChild(element);
+            });
+        }
+
+        async function toggleAdminSetting(settingName) {
+            if(globalUserRole !== "Admin") return;
+            await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'adminToggleSetting', studentId: currentStudentId, setting: settingName })
+            });
+            await synchronizeCorePayload();
+        }
+
+        async function executeAdminRegistration() {
+            const id = document.getElementById('admin-reg-id').value.trim();
+            const pass = document.getElementById('admin-reg-pass').value;
+            const nm = document.getElementById('admin-reg-name').value.trim();
+            
+            if(!id || !pass || !nm) return alert("Fill registration fields fully.");
+            
+            const resp = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'adminRegisterStudent', studentId: currentStudentId, newId: id, newPass: pass, newName: nm })
+            });
+            const out = await resp.json();
+            alert(out.message);
+        }
+
+        function switchView(viewId) {
+            document.querySelectorAll('.view-pane').forEach(el => el.classList.add('hidden'));
+            document.getElementById('view-' + viewId).classList.remove('hidden');
+            
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.classList.remove('text-emerald-600', 'dark:text-emerald-400');
+                btn.classList.add('text-stone-400', 'dark:text-stone-500');
+            });
+            const activeNav = document.getElementById('nav-btn-' + viewId);
+            activeNav.classList.remove('text-stone-400', 'dark:text-stone-500');
+            activeNav.classList.add('text-emerald-600', 'dark:text-emerald-400');
+        }
+
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
         }
 
         function logout() {
-            document.getElementById('dashboard').classList.add('hidden');
+            currentStudentId = "";
+            globalUserRole = "Student";
+            document.getElementById('app-dashboard').classList.add('hidden');
+            document.getElementById('nav-btn-admin').classList.add('hidden');
             document.getElementById('login-page').classList.remove('hidden');
         }
     </script>
