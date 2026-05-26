@@ -3,191 +3,229 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Portal</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>Rahmaniyya Student Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between">
+<body class="bg-slate-50 text-slate-800 font-sans">
 
-    <script>
-        // Paste your Google Apps Script Web App URL here
-        const API_URL = "YOUR_APPS_SCRIPT_WEB_APP_URL";
-        
-        let currentTeacher = { id: "", name: "" };
-
-        function getTodayDate() {
-            return new Date().toISOString().split('T')[0];
-        }
-    </script>
-
-    <!-- LOGIN SCREEN -->
-    <div id="login-screen" class="max-w-md w-full mx-auto my-auto p-6 bg-white rounded-xl shadow-md border border-slate-200">
-        <h2 class="text-2xl font-bold text-center text-indigo-600 mb-6">Teacher Portal Login</h2>
-        <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
-            <div>
-                <label class="block text-sm font-semibold mb-1">Teacher ID</label>
-                <input type="text" id="username" required class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-indigo-400 outline-none">
+    <div id="login-page" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-100">
+            <div class="text-center mb-8">
+                <div class="bg-emerald-500 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl shadow-md">
+                    <i class="fa-solid fa-mosque"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-slate-900">Islamic Tracker</h1>
+                <p class="text-slate-500 text-sm mt-1">Rahmaniyya Public School</p>
             </div>
-            <div>
-                <label class="block text-sm font-semibold mb-1">Password</label>
-                <input type="password" id="password" required class="w-full p-2 border border-slate-300 rounded focus:ring-2 focus:ring-indigo-400 outline-none">
-            </div>
-            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded transition">Log In</button>
-            <p id="login-error" class="text-red-500 text-sm text-center hidden"></p>
-        </form>
-    </div>
-
-    <!-- MAIN PORTAL SCREEN (Hidden by default) -->
-    <div id="portal-screen" class="max-w-3xl w-full mx-auto p-4 md:p-6 bg-white shadow-lg rounded-xl my-6 border border-slate-100 hidden">
-        <header class="flex justify-between items-center border-b border-slate-200 pb-4 mb-6">
-            <div>
-                <h1 class="text-xl font-bold text-slate-900">Welcome, <span id="teacher-name-display" class="text-indigo-600">Teacher</span></h1>
-                <p class="text-sm text-slate-500">ID: <span id="teacher-id-display"></span></p>
-            </div>
-            <button onclick="logout()" class="text-sm bg-slate-200 hover:bg-slate-300 px-3 py-1.5 rounded font-medium transition">Logout</button>
-        </header>
-
-        <!-- SECTION 1: ATTENDANCE (ARRIVAL / LEAVING) -->
-        <section class="mb-8 p-4 bg-indigo-50/50 rounded-lg border border-indigo-100">
-            <h3 class="text-lg font-bold text-indigo-900 mb-3">Shift Attendance</h3>
-            <div class="flex gap-4">
-                <button onclick="submitShiftAttendance('Arrival')" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded transition shadow-sm">
-                    Mark Arrival (Punch In)
-                </button>
-                <button onclick="submitShiftAttendance('Leaving')" class="flex-1 bg-amber-600 hover:bg-amber-700 text-white font-medium py-2.5 rounded transition shadow-sm">
-                    Mark Leaving (Punch Out)
-                </button>
-            </div>
-        </section>
-
-        <!-- SECTION 2: PERIOD LOG & STUDENT ATTENDANCE -->
-        <section class="p-4 bg-slate-50 rounded-lg border border-slate-200">
-            <h3 class="text-lg font-bold text-slate-900 mb-4">Period & Student Attendance Report</h3>
-            <form id="period-form" onsubmit="handlePeriodSubmit(event)" class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-semibold mb-1">Select Period</label>
-                        <select id="period-select" required class="w-full p-2 bg-white border border-slate-300 rounded">
-                            <option value="">-- Choose Period --</option>
-                            <option value="Period 1">Period 1</option>
-                            <option value="Period 2">Period 2</option>
-                            <option value="Period 3">Period 3</option>
-                            <option value="Period 4">Period 4</option>
-                            <option value="Period 5">Period 5</option>
-                            <option value="Period 6">Period 6</option>
-                            <option value="Period 7">Period 7</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold mb-1">Student Attendance Status</label>
-                        <input type="text" id="student-attendance" placeholder="e.g., All Present OR Absentees: Roll 12, 14" required 
-                               class="w-full p-2 bg-white border border-slate-300 rounded">
-                    </div>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Student ID</label>
+                    <input type="text" id="student-id" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold mb-1">Topic / Activity Report</label>
-                    <textarea id="topic-report" rows="3" placeholder="Briefly detail what was taught or accomplished..." required 
-                              class="w-full p-2 bg-white border border-slate-300 rounded"></textarea>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Password</label>
+                    <input type="password" id="password" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
                 </div>
-                <button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-medium py-2.5 rounded transition">
-                    Submit Period Log
-                </button>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl shadow-lg shadow-emerald-600/20 transition duration-200">Sign In</button>
             </form>
-        </section>
+        </div>
     </div>
 
-    <!-- CORE INTERACTION JAVASCRIPT -->
+    <div id="dashboard" class="hidden min-h-screen pb-12">
+        <nav class="bg-white border-b border-slate-200 sticky top-0 z-50 px-4 py-4 shadow-sm">
+            <div class="max-w-4xl mx-auto flex justify-between items-center">
+                <div>
+                    <span class="text-xs text-slate-400 block font-medium">Welcome back,</span>
+                    <span id="user-display-name" class="font-bold text-lg text-slate-800">Student</span>
+                </div>
+                <button onclick="logout()" class="text-slate-400 hover:text-rose-500 transition p-2 rounded-lg bg-slate-50">
+                    <i class="fa-solid fa-arrow-right-from-bracket text-lg"></i>
+                </button>
+            </div>
+        </nav>
+
+        <main class="max-w-4xl mx-auto px-4 mt-6 space-y-6">
+            
+            <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-3">
+                    <div class="p-3 bg-blue-50 text-blue-600 rounded-xl"><i class="fa-solid fa-chart-line text-xl"></i></div>
+                    <div>
+                        <span class="text-xs text-slate-400 block">Namaz Comp.</span>
+                        <span id="stat-namaz-pct" class="font-bold text-lg text-slate-800">85%</span>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-3">
+                    <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl"><i class="fa-solid fa-book-open text-xl"></i></div>
+                    <div>
+                        <span class="text-xs text-slate-400 block">Quran Pages</span>
+                        <span id="stat-quran-count" class="font-bold text-lg text-slate-800">42</span>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-3">
+                    <div class="p-3 bg-amber-50 text-amber-600 rounded-xl"><i class="fa-solid fa-fire text-xl"></i></div>
+                    <div>
+                        <span class="text-xs text-slate-400 block">Day Streak</span>
+                        <span id="stat-streak" class="font-bold text-lg text-slate-800">7 Days</span>
+                    </div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center space-x-3">
+                    <div class="p-3 bg-purple-50 text-purple-600 rounded-xl"><i class="fa-solid fa-trophy text-xl"></i></div>
+                    <div>
+                        <span class="text-xs text-slate-400 block">Rank</span>
+                        <span id="stat-rank" class="font-bold text-lg text-slate-800">#4</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+                <h3 class="text-sm font-semibold text-slate-700 mb-3 flex justify-between">
+                    <span>Monthly Progress Target</span>
+                    <span id="progress-text" class="text-emerald-600 font-bold">65%</span>
+                </h3>
+                <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+                    <div id="progress-bar-fill" class="bg-emerald-500 h-full transition-all duration-500" style="width: 65%"></div>
+                </div>
+            </section>
+
+            <section class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                <h2 class="text-md font-bold text-slate-900 mb-4 flex items-center"><i class="fa-solid fa-circle-check text-emerald-500 mr-2"></i> Mark Daily Namaz</h2>
+                <div class="grid grid-cols-5 gap-2" id="namaz-grid">
+                    <button onclick="toggleNamaz(this, 'subh')" class="flex flex-col items-center py-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-slate-100 transition">
+                        <span class="text-xs font-semibold text-slate-600">Subh</span>
+                        <i class="fa-regular fa-circle-check mt-2 text-slate-300 text-lg"></i>
+                    </button>
+                    <button onclick="toggleNamaz(this, 'zuhr')" class="flex flex-col items-center py-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-slate-100 transition">
+                        <span class="text-xs font-semibold text-slate-600">Zuhr</span>
+                        <i class="fa-regular fa-circle-check mt-2 text-slate-300 text-lg"></i>
+                    </button>
+                    <button onclick="toggleNamaz(this, 'asar')" class="flex flex-col items-center py-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-slate-100 transition">
+                        <span class="text-xs font-semibold text-slate-600">Asar</span>
+                        <i class="fa-regular fa-circle-check mt-2 text-slate-300 text-lg"></i>
+                    </button>
+                    <button onclick="toggleNamaz(this, 'maghrib')" class="flex flex-col items-center py-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-slate-100 transition">
+                        <span class="text-xs font-semibold text-slate-600">Maghrib</span>
+                        <i class="fa-regular fa-circle-check mt-2 text-slate-300 text-lg"></i>
+                    </button>
+                    <button onclick="toggleNamaz(this, 'isha')" class="flex flex-col items-center py-3 rounded-xl border border-slate-100 bg-slate-50 hover:bg-slate-100 transition">
+                        <span class="text-xs font-semibold text-slate-600">Isha</span>
+                        <i class="fa-regular fa-circle-check mt-2 text-slate-300 text-lg"></i>
+                    </button>
+                </div>
+            </section>
+
+            <section class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                <h2 class="text-md font-bold text-slate-900 mb-2 flex items-center"><i class="fa-solid fa-book-open text-sky-500 mr-2"></i> Log Quran Recitation</h2>
+                <p class="text-xs text-slate-400 mb-4">You can log multiple sessions per day. Enter pages completed below.</p>
+                <div class="flex space-x-3">
+                    <input type="number" id="quran-input" min="1" placeholder="Number of pages" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500 transition">
+                    <button onclick="submitQuran()" class="bg-sky-600 hover:bg-sky-700 text-white font-semibold px-6 rounded-xl shadow-lg shadow-sky-600/20 transition duration-200 shrink-0">Log Pages</button>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
     <script>
-        // Handle User Verification
-        async function handleLogin(e) {
+        const API_URL = "https://script.google.com/macros/s/AKfycbx7zr4rMFKS96ZtshaRrGRyfVWatvu1IXVw8fPAQN-yzsTDGCCyaxEI5nu0OXFjWkAv/exec"; 
+        let currentStudentId = "";
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const idInput = document.getElementById("username").value.trim();
-            const passwordInput = document.getElementById("password").value;
-            const errorElement = document.getElementById("login-error");
+            const studentId = document.getElementById('student-id').value;
+            const password = document.getElementById('password').value;
 
-            errorElement.classList.add("hidden");
+            // Optional: Connect to your live API endpoint
+            // For production validation, uncomment this block:
+            /*
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'login', studentId, password })
+            });
+            const result = await response.json();
+            if(!result.success) return alert(result.message);
+            */
 
+            currentStudentId = studentId;
+            document.getElementById('user-display-name').innerText = studentId;
+            document.getElementById('login-page').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            
+            fetchAnalytics();
+        });
+
+        async function toggleNamaz(btn, prayerName) {
+            const isChecked = btn.classList.contains('border-emerald-500');
+            
+            // UI Toggle Behavior (Enforces only one single marking per execution)
+            if (!isChecked) {
+                btn.classList.remove('border-slate-100', 'bg-slate-50', 'text-slate-600');
+                btn.classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-700');
+                btn.querySelector('i').className = "fa-solid fa-circle-check mt-2 text-emerald-600 text-lg";
+            } else {
+                btn.classList.remove('border-emerald-500', 'bg-emerald-50', 'text-emerald-700');
+                btn.classList.add('border-slate-100', 'bg-slate-50', 'text-slate-600');
+                btn.querySelector('i').className = "fa-regular fa-circle-check mt-2 text-slate-300 text-lg";
+            }
+
+            // Sync with Google Sheet
+            await fetch(API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({
+                    action: 'updateStatus',
+                    type: 'namaz',
+                    studentId: currentStudentId,
+                    [prayerName]: !isChecked ? 1 : 0
+                })
+            });
+        }
+
+        async function submitQuran() {
+            const input = document.getElementById('quran-input');
+            const val = parseInt(input.value);
+            if (!val || val <= 0) return alert("Please enter a valid page count.");
+
+            // Sync with Google Sheet (Accumulates values backend side)
+            await fetch(API_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({
+                    action: 'updateStatus',
+                    type: 'quran',
+                    studentId: currentStudentId,
+                    quran: val
+                })
+            });
+
+            alert(`Successfully logged ${val} pages of Quran recitation!`);
+            input.value = "";
+            fetchAnalytics();
+        }
+
+        async function fetchAnalytics() {
             try {
                 const response = await fetch(API_URL, {
-                    method: "POST",
-                    mode: "no-cors", // Bypass browser CORS pre-flight restrictions safely
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        action: "login",
-                        username: idInput,
-                        password: passwordInput
-                    })
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'getAnalytics', studentId: currentStudentId })
                 });
-
-                // Since 'no-cors' treats responses opaquely, we fallback to simple client-side rendering state 
-                // Alternatively, standard REST validation requires JSON response handling:
-                setupPortal(idInput, "Verified Instructor");
-                
+                const data = await response.json();
+                if(data.success && data.stats.namazPct) {
+                    document.getElementById('stat-namaz-pct').innerText = data.stats.namazPct + "%";
+                    document.getElementById('stat-quran-count').innerText = data.stats.quranCount;
+                    document.getElementById('stat-streak').innerText = data.stats.streak + " Days";
+                    document.getElementById('stat-rank').innerText = "#" + data.stats.rank;
+                    document.getElementById('progress-text').innerText = data.stats.namazPct + "%";
+                    document.getElementById('progress-bar-fill').style.width = data.stats.namazPct + "%";
+                }
             } catch (err) {
-                errorElement.innerText = "Connection error. Please try again.";
-                errorElement.classList.remove("hidden");
-            }
-        }
-
-        function setupPortal(id, name) {
-            currentTeacher.id = id;
-            currentTeacher.name = name;
-
-            document.getElementById("teacher-id-display").innerText = id;
-            document.getElementById("teacher-name-display").innerText = name;
-
-            document.getElementById("login-screen").classList.add("hidden");
-            document.getElementById("portal-screen").classList.remove("hidden");
-        }
-
-        // Submit Shift Attendance (Arrival/Leaving)
-        async function submitShiftAttendance(type) {
-            const payload = {
-                action: "teacher_attendance",
-                date: getTodayDate(),
-                teacherId: currentTeacher.id,
-                teacherName: currentTeacher.name,
-                type: type
-            };
-
-            await sendData(payload, `Successfully marked ${type}!`);
-        }
-
-        // Submit Period Report
-        async function handlePeriodSubmit(e) {
-            e.preventDefault();
-            const payload = {
-                action: "period_report",
-                date: getTodayDate(),
-                teacherId: currentTeacher.id,
-                period: document.getElementById("period-select").value,
-                studentAttendance: document.getElementById("student-attendance").value,
-                topicReport: document.getElementById("topic-report").value
-            };
-
-            await sendData(payload, "Period log submitted successfully!");
-            document.getElementById("period-form").reset();
-        }
-
-        // Shared networking worker
-        async function sendData(payload, successMessage) {
-            try {
-                await fetch(API_URL, {
-                    method: "POST",
-                    mode: "no-cors",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payload)
-                });
-                alert(successMessage);
-            } catch (error) {
-                alert("Network submission failed. Verify spreadsheet backend permissions.");
+                console.log("Running in offline layout configuration mode.");
             }
         }
 
         function logout() {
-            currentTeacher = { id: "", name: "" };
-            document.getElementById("login-form").reset();
-            document.getElementById("portal-screen").classList.add("hidden");
-            document.getElementById("login-screen").classList.remove("hidden");
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('login-page').classList.remove('hidden');
         }
     </script>
 </body>
