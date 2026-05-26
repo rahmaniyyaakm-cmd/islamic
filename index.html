@@ -1,465 +1,354 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rahmaniyya Suite - Premium Islamic Analytics</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'], serif: ['Playfair Display', 'serif'] },
-                    colors: {
-                        emerald: { 50: '#f0fdf4', 100: '#dcfce7', 600: '#16a34a', 700: '#15803d', 800: '#166534', 900: '#14532d' },
-                        gold: { 400: '#fbbf24', 500: '#f59e0b', 600: '#d97706' }
-                    }
-                }
-            }
-        }
-    </script>
+    <title>Rahmaniyya Islamic Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 10px; }
-        body { -webkit-tap-highlight-color: transparent; }
+        :root {
+            --islamic-green: #064e3b;
+            --gold: #d97706;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f172a; /* Dark mode background */
+            color: #f8fafc;
+        }
+        .gold-glow {
+            text-shadow: 0 0 10px rgba(217, 119, 6, 0.5);
+        }
     </style>
 </head>
-<body class="bg-stone-100 dark:bg-stone-950 text-stone-800 dark:text-stone-100 min-h-screen font-sans transition-colors duration-300">
+<body class="min-h-screen flex flex-col justify-between">
 
-    <div id="login-page" class="min-h-screen flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-stone-900 p-8 rounded-3xl shadow-xl border border-stone-200 dark:border-stone-800 w-full max-w-sm transition-transform duration-300 transform scale-100">
-            <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 mb-3 text-xl">
-                    <i class="fa-solid fa-mosque"></i>
-                </div>
-                <span class="text-xs uppercase font-bold tracking-widest text-emerald-600 dark:text-emerald-400 block mb-1">Rahmaniyya</span>
-                <h1 class="text-2xl font-serif font-bold text-stone-900 dark:text-white">Student Portal Suite</h1>
-                <p class="text-stone-500 dark:text-stone-400 text-xs mt-1">Access metrics, updates, and analytics rankings</p>
-            </div>
-            <form id="login-form" class="space-y-4">
+    <div id="login-page" class="flex-grow flex items-center justify-center px-4">
+        <div class="bg-slate-800 border border-emerald-800/50 p-8 rounded-2xl shadow-2xl max-w-md w-full text-center">
+            <div class="text-emerald-500 text-5xl mb-3"><i class="fa-solid fa-mosque"></i></div>
+            <h2 class="text-2xl font-bold mb-2 tracking-wide text-amber-500 gold-glow">Rahmaniyya Portal</h2>
+            <p class="text-slate-400 text-sm mb-6">Daily Namaz & Quran Progress App</p>
+            
+            <form id="login-form" class="space-y-4 text-left">
                 <div>
-                    <input type="text" id="student-id" placeholder="Student ID" required class="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/50 text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition text-sm">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">STUDENT ID</label>
+                    <input type="text" id="login-id" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 transition-colors" placeholder="e.g., STU001">
                 </div>
                 <div>
-                    <input type="password" id="password" placeholder="Password" required class="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/50 text-stone-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition text-sm">
+                    <label class="block text-xs font-semibold text-slate-400 mb-1">PASSWORD</label>
+                    <input type="password" id="login-pass" required class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-emerald-500 transition-colors" placeholder="••••••••">
                 </div>
-                <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-600 text-white font-medium py-3 rounded-xl transition duration-200 text-sm tracking-wide shadow-md shadow-emerald-700/10">Sign In</button>
+                <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-600 font-bold p-3 rounded-lg text-white transition-all shadow-md transform active:scale-95 mt-2">
+                    Sign In
+                </button>
             </form>
         </div>
     </div>
 
-    <div id="app-dashboard" class="hidden min-h-screen max-w-md mx-auto bg-stone-50 dark:bg-stone-900 shadow-2xl flex flex-col justify-between border-x border-stone-200 dark:border-stone-800 relative">
-        
-        <header class="p-4 border-b border-stone-200 dark:border-stone-800 sticky top-0 bg-stone-50/90 dark:bg-stone-900/90 backdrop-blur z-40 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <div class="w-8 h-8 rounded-lg bg-emerald-700 text-white flex items-center justify-center text-xs"><i class="fa-solid fa-star-and-crescent"></i></div>
+    <div id="app-dashboard" class="hidden flex-grow flex flex-col pb-20">
+        <header class="bg-emerald-950/80 backdrop-blur border-b border-emerald-800 p-4 sticky top-0 z-50 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="text-amber-500 text-xl"><i class="fa-solid fa-crescent"></i></div>
                 <div>
-                    <h2 id="header-user-title" class="font-serif font-bold text-sm text-stone-900 dark:text-white">Student Hub</h2>
-                    <p id="system-date-label" class="text-[10px] text-stone-400">Loading timestamp...</p>
+                    <h1 id="user-display-name" class="font-bold text-sm text-white">Loading...</h1>
+                    <p class="text-xs text-emerald-400" id="current-date-badge"></p>
                 </div>
             </div>
-            <div class="flex items-center space-x-3">
-                <button onclick="toggleTheme()" class="w-8 h-8 rounded-full bg-stone-200 dark:bg-stone-800 text-stone-600 dark:text-stone-300 flex items-center justify-center text-xs hover:scale-105 transition"><i class="fa-solid fa-moon dark:hidden"></i><i class="fa-solid fa-sun hidden dark:block"></i></button>
-                <button onclick="logout()" class="text-xs text-red-500 hover:text-red-400 font-medium"><i class="fa-solid fa-power-off text-base"></i></button>
-            </div>
+            <button onclick="logout()" class="text-slate-400 hover:text-rose-400 text-sm p-2 transition-colors">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
         </header>
 
-        <main class="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar pb-24">
+        <main class="max-w-md w-full mx-auto p-4 space-y-6 flex-grow">
             
-            <div id="view-home" class="space-y-5 view-pane">
-                <div class="grid grid-cols-4 gap-2">
-                    <div class="bg-white dark:bg-stone-800/60 p-2.5 rounded-xl border border-stone-200 dark:border-stone-800 text-center shadow-sm">
-                        <span class="text-[9px] uppercase font-bold tracking-wider text-stone-400 block mb-0.5">Streak</span>
-                        <span id="card-streak" class="font-serif font-bold text-stone-900 dark:text-emerald-400">0 Days</span>
-                    </div>
-                    <div class="bg-white dark:bg-stone-800/60 p-2.5 rounded-xl border border-stone-200 dark:border-stone-800 text-center shadow-sm">
-                        <span class="text-[9px] uppercase font-bold tracking-wider text-stone-400 block mb-0.5">Namaz %</span>
-                        <span id="card-namaz" class="font-serif font-bold text-emerald-600 dark:text-emerald-400">0%</span>
-                    </div>
-                    <div class="bg-white dark:bg-stone-800/60 p-2.5 rounded-xl border border-stone-200 dark:border-stone-800 text-center shadow-sm">
-                        <span class="text-[9px] uppercase font-bold tracking-wider text-stone-400 block mb-0.5">Quran Count</span>
-                        <span id="card-quran" class="font-serif font-bold text-stone-900 dark:text-white">0 pgs</span>
-                    </div>
-                    <div class="bg-white dark:bg-stone-800/60 p-2.5 rounded-xl border border-stone-200 dark:border-stone-800 text-center shadow-sm">
-                        <span class="text-[9px] uppercase font-bold tracking-wider text-stone-400 block mb-0.5">Class Rank</span>
-                        <span id="card-rank" class="font-serif font-bold text-gold-500">#0</span>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="text-xs uppercase font-bold tracking-widest text-stone-400 dark:text-stone-500 mb-2.5 flex items-center gap-1.5"><i class="fa-solid fa-circle-check text-emerald-600"></i> Daily Prayers</h3>
-                    <div class="space-y-2" id="prayer-feed-list"></div>
-                </div>
-
-                <div class="bg-white dark:bg-stone-800/60 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="text-xs uppercase font-bold tracking-widest text-stone-400 dark:text-stone-500 flex items-center gap-1.5"><i class="fa-solid fa-book-quran text-emerald-600"></i> Quran Ledger</h3>
-                        <span class="text-[11px] text-stone-500">Logged Today: <span id="quran-today-badge" class="font-bold text-emerald-600">0</span> pages</span>
-                    </div>
-                    <div class="flex items-center justify-between gap-3">
-                        <div class="flex items-center bg-stone-100 dark:bg-stone-900 rounded-xl p-1 border border-stone-200 dark:border-stone-700">
-                            <button onclick="adjustCounter(-1)" class="w-9 h-9 rounded-lg bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-200 font-bold hover:bg-stone-200 dark:hover:bg-stone-700 transition shadow-sm text-sm">-</button>
-                            <input type="number" id="quran-val-input" value="1" min="1" class="w-12 text-center bg-transparent font-bold text-stone-900 dark:text-white focus:outline-none text-sm">
-                            <button onclick="adjustCounter(1)" class="w-9 h-9 rounded-lg bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-200 font-bold hover:bg-stone-200 dark:hover:bg-stone-700 transition shadow-sm text-sm">+</button>
-                        </div>
-                        <button onclick="submitQuranLog()" class="flex-1 bg-stone-900 dark:bg-emerald-700 hover:bg-stone-800 dark:hover:bg-emerald-600 text-white text-xs font-semibold py-3 px-4 rounded-xl transition shadow-md">Post Pages Entry</button>
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-analytics" class="hidden space-y-5 view-pane">
-                <h3 class="text-sm font-serif font-bold text-stone-900 dark:text-white">Performance Analytics Graphs</h3>
-                <div class="bg-white dark:bg-stone-800 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm">
-                    <canvas id="analyticsChart" class="w-full"></canvas>
-                </div>
-                <div class="bg-white dark:bg-stone-800 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 shadow-sm space-y-3">
-                    <h4 class="text-xs uppercase font-bold text-stone-400">Monthly Targets Calculation Summary</h4>
-                    <div class="flex justify-between items-center text-xs border-b border-stone-100 dark:border-stone-700 pb-2">
-                        <span class="text-stone-500">Namaz Target Evaluation</span>
-                        <span id="target-namaz-lbl" class="font-bold text-emerald-600">0% / 100%</span>
-                    </div>
-                    <div class="flex justify-between items-center text-xs">
-                        <span class="text-stone-500">Quran Pages Milestone Tracking</span>
-                        <span id="target-quran-lbl" class="font-bold text-stone-800 dark:text-stone-200">0 Pages Total</span>
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-leaderboard" class="hidden space-y-4 view-pane">
-                <div>
-                    <h3 class="text-sm font-serif font-bold text-stone-900 dark:text-white">Top 10 High Achievement Board</h3>
-                    <p class="text-[11px] text-stone-400">Calculated dynamically from Monthly aggregations</p>
-                </div>
-                <div class="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-800 overflow-hidden shadow-sm">
-                    <div class="bg-stone-100 dark:bg-stone-700/40 p-3 text-xs grid grid-cols-12 font-bold text-stone-500 tracking-wide uppercase">
-                        <span class="col-span-2 text-center">Rank</span>
-                        <span class="col-span-6">Student</span>
-                        <span class="col-span-2 text-center">Namaz</span>
-                        <span class="col-span-2 text-center">Quran</span>
-                    </div>
-                    <div id="leaderboard-target-box" class="divide-y divide-stone-100 dark:divide-stone-700">
-                        </div>
-                </div>
-            </div>
-
-            <div id="view-profile" class="hidden space-y-4 view-pane">
-                <div class="bg-white dark:bg-stone-800 p-6 rounded-2xl border border-stone-200 dark:border-stone-800 text-center shadow-sm relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 dark:bg-emerald-500/10 rounded-bl-full pointer-events-none"></div>
-                    <div class="w-16 h-16 rounded-full bg-stone-100 dark:bg-stone-700 mx-auto mb-3 flex items-center justify-center text-stone-400 text-2xl font-bold border border-stone-200 dark:border-stone-600" id="profile-initials">M</div>
-                    <h3 id="profile-name" class="font-serif font-bold text-lg text-stone-900 dark:text-white">---</h3>
-                    <p id="profile-id" class="text-xs text-stone-400 mt-0.5">ID: ---</p>
-                    <div class="mt-4 pt-4 border-t border-stone-100 dark:border-stone-700 grid grid-cols-2 gap-2 text-left">
-                        <div class="p-2 bg-stone-50 dark:bg-stone-900 rounded-xl"><span class="text-[10px] text-stone-400 uppercase block">Account Role</span><span id="profile-role" class="text-xs font-semibold text-stone-800 dark:text-stone-200">Student</span></div>
-                        <div class="p-2 bg-stone-50 dark:bg-stone-900 rounded-xl"><span class="text-[10px] text-stone-400 uppercase block">Current Tier</span><span id="profile-tier" class="text-xs font-semibold text-gold-600">Active Competitor</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="view-admin" class="hidden space-y-4 view-pane">
-                <div class="border-b border-stone-200 dark:border-stone-800 pb-2">
-                    <h3 class="text-sm font-serif font-bold text-red-600 dark:text-red-400 flex items-center gap-1.5"><i class="fa-solid fa-sliders"></i> Central Administrative Panel</h3>
-                    <p class="text-[11px] text-stone-400">Authorized configuration adjustments and overrides</p>
-                </div>
-                <div class="bg-white dark:bg-stone-800 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 space-y-4 shadow-sm">
-                    <h4 class="text-xs font-bold text-stone-700 dark:text-stone-300 uppercase tracking-wider">System-Wide Configurations</h4>
-                    <div class="flex items-center justify-between p-2.5 bg-stone-50 dark:bg-stone-900 rounded-xl border border-stone-100 dark:border-stone-800">
+            <section id="track-section" class="space-y-6">
+                <div class="bg-gradient-to-r from-emerald-900 to-teal-950 p-4 rounded-xl border border-emerald-700/40 flex justify-between items-center shadow-lg">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-amber-500 text-2xl"><i class="fa-solid fa-fire-flame-curved"></i></span>
                         <div>
-                            <span class="text-xs font-semibold block">Ramadan Protocol Scale</span>
-                            <span class="text-[10px] text-stone-400">Modifies point calculations globally</span>
+                            <p class="text-xs text-emerald-300 font-medium">CURRENT STREAK</p>
+                            <h3 class="text-xl font-black" id="streak-count">0 Days</h3>
                         </div>
-                        <button onclick="toggleAdminSetting('Ramadan_Mode')" id="btn-ramadan-mode" class="px-3 py-1 bg-stone-300 dark:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-bold rounded-lg transition">Disabled</button>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] text-slate-400">Keep it up!</p>
                     </div>
                 </div>
-                <div class="bg-white dark:bg-stone-800 p-4 rounded-2xl border border-stone-200 dark:border-stone-800 space-y-3 shadow-sm">
-                    <h4 class="text-xs font-bold text-stone-700 dark:text-stone-300 uppercase tracking-wider">Student Registration Overrides</h4>
-                    <div class="space-y-2 text-xs">
-                        <input type="text" id="admin-reg-id" placeholder="New Student ID" class="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-transparent text-stone-900 dark:text-white focus:outline-none">
-                        <input type="password" id="admin-reg-pass" placeholder="Password" class="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-transparent text-stone-900 dark:text-white focus:outline-none">
-                        <input type="text" id="admin-reg-name" placeholder="Full Student Name" class="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-transparent text-stone-900 dark:text-white focus:outline-none">
-                        <button onclick="executeAdminRegistration()" class="w-full bg-emerald-700 text-white font-medium py-2.5 rounded-lg transition hover:bg-emerald-600">Register Account</button>
-                    </div>
-                </div>
-            </div>
 
+                <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700 shadow-md">
+                    <h3 class="text-md font-bold mb-4 flex items-center text-amber-500"><i class="fa-solid fa-person-praying mr-2"></i> Daily Namaz <span class="ml-2 text-xs font-normal text-slate-400">(Max 1 check/day)</span></h3>
+                    <div class="space-y-3" id="namaz-checkbox-group">
+                        </div>
+                    <button onclick="submitNamaz()" class="w-full mt-4 bg-emerald-700 hover:bg-emerald-600 py-2.5 rounded-xl text-xs font-bold transition-all">
+                        Save Namaz Log
+                    </button>
+                </div>
+
+                <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700 shadow-md">
+                    <h3 class="text-md font-bold mb-3 flex items-center text-amber-500"><i class="fa-solid fa-book-quran mr-2"></i> Quran Log <span class="ml-2 text-xs font-normal text-slate-400">(Multiple logs allowed)</span></h3>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="block text-[11px] text-slate-400 mb-1">PAGES COMPLETED</label>
+                            <input type="number" id="quran-pages" min="1" placeholder="e.g., 2" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-400 mb-1">SURAH / PARAH NOTE</label>
+                            <input type="text" id="quran-note" placeholder="e.g., Al-Baqarah Verses 1-20" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <button onclick="submitQuran()" class="w-full bg-amber-600 hover:bg-amber-500 py-2.5 rounded-xl text-xs font-bold transition-all">
+                            Log Recitation
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="analytics-section" class="hidden space-y-6">
+                <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700 shadow-md">
+                    <h3 class="text-md font-bold mb-4 text-amber-500"><i class="fa-solid fa-chart-line mr-2"></i> Performance Metrics</h3>
+                    <div class="relative w-full h-48 mb-4">
+                        <canvas id="namazChart"></canvas>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 text-center mt-2">
+                        <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700">
+                            <span class="text-xs text-slate-400 block">Namaz Completion %</span>
+                            <span class="text-lg font-bold text-emerald-400" id="analytics-namaz-pct">0%</span>
+                        </div>
+                        <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700">
+                            <span class="text-xs text-slate-400 block">Total Quran Pages</span>
+                            <span class="text-lg font-bold text-amber-400" id="analytics-quran-total">0</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="leaderboard-section" class="hidden space-y-6">
+                <div class="bg-slate-800/80 p-5 rounded-2xl border border-slate-700 shadow-md">
+                    <h3 class="text-md font-bold mb-4 text-amber-500 flex items-center"><i class="fa-solid fa-trophy mr-2 text-yellow-500"></i> Top 10 Leaderboard</h3>
+                    <div class="overflow-hidden rounded-xl border border-slate-700 bg-slate-900">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-800 text-slate-300 border-b border-slate-700">
+                                <tr>
+                                    <th class="p-3 text-center">Rank</th>
+                                    <th class="p-3">Student</th>
+                                    <th class="p-3 text-center">Namaz %</th>
+                                    <th class="p-3 text-center">Quran (Pgs)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-entries" class="divide-y divide-slate-800 text-slate-300">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
         </main>
 
-        <nav class="absolute bottom-0 left-0 right-0 border-t border-stone-200 dark:border-stone-800 bg-white/95 dark:bg-stone-900/95 backdrop-blur z-40 p-2 flex justify-around items-center">
-            <button onclick="switchView('home')" id="nav-btn-home" class="flex flex-col items-center space-y-1 text-emerald-600 dark:text-emerald-400 transition transform duration-150 active:scale-95"><i class="fa-solid fa-house text-base"></i><span class="text-[9px] tracking-tight font-medium">Home</span></button>
-            <button onclick="switchView('analytics')" id="nav-btn-analytics" class="flex flex-col items-center space-y-1 text-stone-400 dark:text-stone-500 transition transform duration-150 active:scale-95"><i class="fa-solid fa-chart-line text-base"></i><span class="text-[9px] tracking-tight font-medium">Analytics</span></button>
-            <button onclick="switchView('leaderboard')" id="nav-btn-leaderboard" class="flex flex-col items-center space-y-1 text-stone-400 dark:text-stone-500 transition transform duration-150 active:scale-95"><i class="fa-solid fa-trophy text-base"></i><span class="text-[9px] tracking-tight font-medium">Rankings</span></button>
-            <button onclick="switchView('profile')" id="nav-btn-profile" class="flex flex-col items-center space-y-1 text-stone-400 dark:text-stone-500 transition transform duration-150 active:scale-95"><i class="fa-solid fa-user text-base"></i><span class="text-[9px] tracking-tight font-medium">Profile</span></button>
-            <button onclick="switchView('admin')" id="nav-btn-admin" class="hidden flex flex-col items-center space-y-1 text-red-400 transition transform duration-150 active:scale-95"><i class="fa-solid fa-user-gear text-base"></i><span class="text-[9px] tracking-tight font-medium">Admin</span></button>
+        <nav class="fixed bottom-0 left-0 right-0 bg-slate-950/95 border-t border-slate-800 p-2 flex justify-around items-center max-w-md mx-auto shadow-2xl z-50 rounded-t-xl">
+            <button onclick="switchTab('track')" id="btn-tab-track" class="flex flex-col items-center space-y-1 text-emerald-500 transition-colors w-16">
+                <span class="text-lg"><i class="fa-solid fa-pen-to-square"></i></span>
+                <span class="text-[10px] font-medium">Track</span>
+            </button>
+            <button onclick="switchTab('analytics')" id="btn-tab-analytics" class="flex flex-col items-center space-y-1 text-slate-400 hover:text-slate-200 transition-colors w-16">
+                <span class="text-lg"><i class="fa-solid fa-chart-pie"></i></span>
+                <span class="text-[10px] font-medium">Analysis</span>
+            </button>
+            <button onclick="switchTab('leaderboard')" id="btn-tab-leaderboard" class="flex flex-col items-center space-y-1 text-slate-400 hover:text-slate-200 transition-colors w-16">
+                <span class="text-lg"><i class="fa-solid fa-star"></i></span>
+                <span class="text-[10px] font-medium">Top 10</span>
+            </button>
         </nav>
     </div>
 
     <script>
-        const API_URL = "https://script.google.com/macros/s/AKfycbx7zr4rMFKS96ZtshaRrGRyfVWatvu1IXVw8fPAQN-yzsTDGCCyaxEI5nu0OXFjWkAv/exec";
-        let currentStudentId = "";
-        let currentStudentToken = "";
-        let globalUserRole = "Student";
-        let globalChartRef = null;
+        // BACKEND APPS SCRIPT WEB APP URL (Replace this with your deployed deployment URL)
+        const DEPLOYED_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7zr4rMFKS96ZtshaRrGRyfVWatvu1IXVw8fPAQN-yzsTDGCCyaxEI5nu0OXFjWkAv/exec";
 
-        const prayersMeta = [
-            { id: 'subh', label: 'Subh (Fajr)', time: '05:15' },
-            { id: 'zuhr', label: 'Zuhr', time: '12:30' },
-            { id: 'asar', label: 'Asar', time: '15:45' },
-            { id: 'maghrib', label: 'Maghrib', time: '18:40' },
-            { id: 'isha', label: 'Isha', time: '20:00' }
-        ];
+        // Global State Objects
+        let currentStudent = null;
+        let todayNamazData = { subh: false, zuhr: false, asar: false, maghrib: false, isha: false };
+        let macroChartObj = null;
 
-        document.getElementById('system-date-label').innerText = new Date().toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' });
-
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
+        document.getElementById('login-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            const idInput = document.getElementById('student-id').value.trim();
-            const passInput = document.getElementById('password').value;
+            handleLogin();
+        });
+
+        // Tab Management
+        function switchTab(targetTab) {
+            const sections = ['track', 'analytics', 'leaderboard'];
+            sections.forEach(s => {
+                document.getElementById(`${s}-section`).classList.add('hidden');
+                document.getElementById(`btn-tab-${s}`).classList.replace('text-emerald-500', 'text-slate-400');
+            });
             
+            document.getElementById(`${targetTab}-section`).classList.remove('hidden');
+            document.getElementById(`btn-tab-${targetTab}`).classList.replace('text-slate-400', 'text-emerald-500');
+
+            if (targetTab === 'analytics') renderAnalyticsCharts();
+            if (targetTab === 'leaderboard') fetchLeaderboard();
+        }
+
+        // Authentication Pipeline
+        async function handleLogin() {
+            const sId = document.getElementById('login-id').value.trim();
+            const password = document.getElementById('login-pass').value;
+
+            showLoading(true);
             try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'login', studentId: idInput, password: passInput })
-                });
+                const response = await fetch(`${DEPLOYED_APPS_SCRIPT_URL}?action=login&studentId=${sId}&password=${password}`);
                 const data = await response.json();
-                if (data.success) {
-                    currentStudentId = idInput;
-                    globalUserRole = data.role || "Student";
-                    
-                    document.getElementById('header-user-title').innerText = data.name;
-                    document.getElementById('profile-name').innerText = data.name;
-                    document.getElementById('profile-id').innerText = "ID: " + idInput;
-                    document.getElementById('profile-role').innerText = globalUserRole;
-                    document.getElementById('profile-initials').innerText = data.name.charAt(0).toUpperCase();
 
-                    if(globalUserRole === "Admin") {
-                        document.getElementById('nav-btn-admin').classList.remove('hidden');
-                    }
-
-                    document.getElementById('login-page').classList.add('hidden');
-                    document.getElementById('app-dashboard').classList.remove('hidden');
-                    
-                    buildPrayerFeed({});
-                    await synchronizeCorePayload();
+                if(data.success) {
+                    currentStudent = data.student;
+                    initializeDashboard(data.todayNamaz);
                 } else {
-                    alert(data.message || "Credential validation mismatch.");
+                    alert("Authentication Error: " + data.message);
                 }
             } catch (err) {
-                alert("Core server network bridge fault. Try logging in again.");
-            }
-        });
-
-        function buildPrayerFeed(statusObject) {
-            const container = document.getElementById('prayer-feed-list');
-            container.innerHTML = "";
-            prayersMeta.forEach(p => {
-                const active = statusObject[p.id] === 1;
-                const block = document.createElement('div');
-                block.className = `group flex items-center justify-between p-3.5 rounded-xl border transition cursor-pointer ${
-                    active ? 'bg-emerald-50/60 dark:bg-emerald-950/20 border-emerald-300 dark:border-emerald-800/80' : 'bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700/60'
-                }`;
-                block.onclick = () => dispatchPrayerToggle(p.id, active ? 0 : 1);
-                block.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <span class="text-[11px] font-bold text-stone-400 tracking-wide">${p.time}</span>
-                        <span class="text-xs font-semibold ${active ? 'text-emerald-900 dark:text-emerald-300' : 'text-stone-700 dark:text-stone-300'}">${p.label}</span>
-                    </div>
-                    <i class="${active ? 'fa-solid fa-circle-check text-emerald-600' : 'fa-regular fa-circle text-stone-300 dark:text-stone-600'} text-lg transition-transform group-hover:scale-105"></i>
-                `;
-                container.appendChild(block);
-            });
-        }
-
-       async function synchronizeCorePayload() {
-    try {
-        // We use an explicit GET-style fallback query to bypass CORS blocks safely
-        const response = await fetch(`${API_URL}?action=getAnalytics&studentId=${currentStudentId}`);
-        const data = await response.json();
-        
-        if(data.success) {
-            // Update main dynamic display components
-            document.getElementById('card-namaz').innerText = (data.stats.namazPct || 0) + "%";
-            document.getElementById('card-quran').innerText = (data.stats.quranCount || 0) + " pgs";
-            document.getElementById('card-streak').innerText = (data.stats.streak || 0) + " Days";
-            document.getElementById('card-rank').innerText = "#" + (data.stats.rank || "N/A");
-            document.getElementById('quran-today-badge').innerText = data.stats.quranToday || 0;
-            
-            document.getElementById('target-namaz-lbl').innerText = (data.stats.namazPct || 0) + "% / 100%";
-            document.getElementById('target-quran-lbl').innerText = (data.stats.quranCount || 0) + " Pages Absolute";
-
-            buildPrayerFeed(data.stats.dailyNamaz || {});
-            renderAnalyticsChart(data.historical || []);
-            renderLeaderboard(data.leaderboard || []);
-            
-            if(data.settings) {
-                const ramadanBtn = document.getElementById('btn-ramadan-mode');
-                if(data.settings.Ramadan_Mode === "true") {
-                    ramadanBtn.innerText = "Active";
-                    ramadanBtn.className = "px-3 py-1 bg-emerald-600 text-white text-xs font-bold rounded-lg transition";
-                } else {
-                    ramadanBtn.innerText = "Disabled";
-                    ramadanBtn.className = "px-3 py-1 bg-stone-300 dark:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-bold rounded-lg transition";
-                }
+                console.error(err);
+                alert("Failed to communicate with Rahmaniyya Database.");
+            } finally {
+                showLoading(false);
             }
         }
-    } catch (err) {
-        console.error("Tracking payload sync skipped/failed:", err);
-    }
-}
 
-async function dispatchPrayerToggle(prayerName, targetState) {
-    // 1. INSTANT LOCAL UI UPDATE (No delay waiting for server)
-    const currentFeed = {};
-    prayersMeta.forEach(p => {
-        const row = document.querySelector(`[onclick*="${p.id}"]`);
-        const isActive = row.querySelector('i').classList.contains('fa-solid');
-        currentFeed[p.id] = p.id === prayerName ? targetState : (isActive ? 1 : 0);
-    });
-    buildPrayerFeed(currentFeed);
+        function initializeDashboard(namazLog) {
+            document.getElementById('login-page').classList.add('hidden');
+            document.getElementById('app-dashboard').classList.remove('hidden');
 
-    // 2. BACKGROUND FIRE-AND-FORGET POST SYNC
-    try {
-        await fetch(API_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'text/plain' },
-            body: JSON.stringify({
-                action: 'updateStatus',
-                type: 'namaz',
-                studentId: currentStudentId,
-                prayer: prayerName,
-                value: targetState
-            })
-        });
-        
-        // 3. SILENT BACKGROUND UPDATE FOR METRIC CARDS
-        setTimeout(synchronizeCorePayload, 1500);
-    } catch(err) {
-        console.error("Network upload error:", err);
-    }
-}
-        
-        // Refresh calculations instantly on screen
-        await synchronizeCorePayload();
-    } catch(err) {
-        console.error("Failed to sync prayer status:", err);
-    }
-}
+            document.getElementById('user-display-name').innerText = currentStudent.name;
+            document.getElementById('streak-count').innerText = `${currentStudent.streak || 0} Days`;
+            
+            const today = new Date();
+            document.getElementById('current-date-badge').innerText = today.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
 
-        function adjustCounter(amt) {
-            const el = document.getElementById('quran-val-input');
-            let computed = parseInt(el.value) + amt;
-            if(computed < 1) computed = 1;
-            el.value = computed;
+            if(namazLog) {
+                todayNamazData = {
+                    subh: !!namazLog.Subh,
+                    zuhr: !!namazLog.Zuhr,
+                    asar: !!namazLog.Asar,
+                    maghrib: !!namazLog.Maghrib,
+                    isha: !!namazLog.Isha
+                };
+            }
+            renderNamazCheckboxes();
         }
 
-        async function submitQuranLog() {
-            const val = parseInt(document.getElementById('quran-val-input').value);
-            await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify({
-                    action: 'updateStatus',
-                    type: 'quran',
-                    studentId: currentStudentId,
-                    quran: val
-                })
-            });
-            alert(`Logged ${val} pages successfully.`);
-            await synchronizeCorePayload();
-        }
+        function renderNamazCheckboxes() {
+            const prayers = ['Subh', 'Zuhr', 'Asar', 'Maghrib', 'Isha'];
+            const container = document.getElementById('namaz-checkbox-group');
+            container.innerHTML = '';
 
-        function renderAnalyticsChart(historicalData) {
-            const ctx = document.getElementById('analyticsChart').getContext('2d');
-            const labels = historicalData.map(d => d.date);
-            const namazDataset = historicalData.map(d => d.namazCount);
-            const quranDataset = historicalData.map(d => d.quranCount);
-
-            if (globalChartRef) { globalChartRef.destroy(); }
-
-            globalChartRef = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        { label: 'Prayers Checked', data: namazDataset, borderColor: '#16a34a', tension: 0.2, yAxisID: 'y' },
-                        { label: 'Pages Recited', data: quranDataset, borderColor: '#fbbf24', tension: 0.2, yAxisID: 'y1' }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: { type: 'linear', display: true, position: 'left', min: 0, max: 5 },
-                        y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false } }
-                    }
-                }
-            });
-        }
-
-        function renderLeaderboard(boardData) {
-            const box = document.getElementById('leaderboard-target-box');
-            box.innerHTML = "";
-            boardData.forEach((row, i) => {
-                const element = document.createElement('div');
-                element.className = "p-3 grid grid-cols-12 text-xs items-center hover:bg-stone-50 dark:hover:bg-stone-800/40 transition";
-                element.innerHTML = `
-                    <span class="col-span-2 text-center font-bold text-stone-500">${i+1}</span>
-                    <span class="col-span-6 font-medium text-stone-900 dark:text-stone-100">${row.name}</span>
-                    <span class="col-span-2 text-center text-emerald-600 font-bold">${row.namazPct}%</span>
-                    <span class="col-span-2 text-center text-stone-600 dark:text-stone-300 font-bold">${row.quranCount}</span>
+            prayers.forEach(p => {
+                const key = p.toLowerCase();
+                const isChecked = todayNamazData[key];
+                
+                const elementRow = document.createElement('label');
+                elementRow.className = `flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer ${isChecked ? 'bg-emerald-950/40 border-emerald-600 text-emerald-300' : 'bg-slate-900 border-slate-700 text-slate-400'}`;
+                elementRow.innerHTML = `
+                    <span class="text-xs font-semibold tracking-wider">${p}</span>
+                    <input type="checkbox" class="w-4 h-4 accent-emerald-500 rounded" ${isChecked ? 'checked' : ''} onchange="toggleLocalNamazStatus('${key}', this.checked)">
                 `;
-                box.appendChild(element);
+                container.appendChild(elementRow);
             });
         }
 
-        async function toggleAdminSetting(settingName) {
-            if(globalUserRole !== "Admin") return;
-            await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: 'adminToggleSetting', studentId: currentStudentId, setting: settingName })
-            });
-            await synchronizeCorePayload();
+        function toggleLocalNamazStatus(prayerKey, value) {
+            todayNamazData[prayerKey] = value;
         }
 
-        async function executeAdminRegistration() {
-            const id = document.getElementById('admin-reg-id').value.trim();
-            const pass = document.getElementById('admin-reg-pass').value;
-            const nm = document.getElementById('admin-reg-name').value.trim();
-            
-            if(!id || !pass || !nm) return alert("Fill registration fields fully.");
-            
-            const resp = await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: 'adminRegisterStudent', studentId: currentStudentId, newId: id, newPass: pass, newName: nm })
-            });
-            const out = await resp.json();
-            alert(out.message);
+        // Submissions 
+        async function submitNamaz() {
+            showLoading(true);
+            try {
+                const queryParams = new URLSearchParams({
+                    action: 'logNamaz',
+                    studentId: currentStudent.studentId,
+                    ...todayNamazData
+                });
+                const response = await fetch(`${DEPLOYED_APPS_SCRIPT_URL}?${queryParams.toString()}`, { method: 'POST' });
+                const result = await response.json();
+                if(result.success) alert("Namaz status processed successfully.");
+            } catch (e) {
+                alert("Error submitting data.");
+            } finally { showLoading(false); renderNamazCheckboxes(); }
         }
 
-        function switchView(viewId) {
-            document.querySelectorAll('.view-pane').forEach(el => el.classList.add('hidden'));
-            document.getElementById('view-' + viewId).classList.remove('hidden');
-            
-            document.querySelectorAll('nav button').forEach(btn => {
-                btn.classList.remove('text-emerald-600', 'dark:text-emerald-400');
-                btn.classList.add('text-stone-400', 'dark:text-stone-500');
-            });
-            const activeNav = document.getElementById('nav-btn-' + viewId);
-            activeNav.classList.remove('text-stone-400', 'dark:text-stone-500');
-            activeNav.classList.add('text-emerald-600', 'dark:text-emerald-400');
+        async function submitQuran() {
+            const pages = document.getElementById('quran-pages').value;
+            const note = document.getElementById('quran-note').value;
+            if(!pages || pages < 1) return alert("Please clarify total pages completed.");
+
+            showLoading(true);
+            try {
+                const queryParams = new URLSearchParams({
+                    action: 'logQuran',
+                    studentId: currentStudent.studentId,
+                    pages: pages,
+                    note: note
+                });
+                const response = await fetch(`${DEPLOYED_APPS_SCRIPT_URL}?${queryParams.toString()}`, { method: 'POST' });
+                const result = await response.json();
+                if(result.success) {
+                    alert(`Logged ${pages} pages cleanly.`);
+                    document.getElementById('quran-pages').value = '';
+                    document.getElementById('quran-note').value = '';
+                }
+            } catch (e) {
+                alert("Submission failed.");
+            } finally { showLoading(false); }
         }
 
-        function toggleTheme() {
-            document.documentElement.classList.toggle('dark');
+        // Analytics Visuals
+        async function renderAnalyticsCharts() {
+            try {
+                const response = await fetch(`${DEPLOYED_APPS_SCRIPT_URL}?action=getAnalytics&studentId=${currentStudent.studentId}`);
+                const data = await response.json();
+
+                document.getElementById('analytics-namaz-pct').innerText = `${data.namazPercentage}%`;
+                document.getElementById('analytics-quran-total').innerText = data.totalQuranPages;
+
+                if (macroChartObj) macroChartObj.destroy();
+                const ctx = document.getElementById('namazChart').getContext('2d');
+                macroChartObj = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Completed Prayers', 'Missed Prayers'],
+                        datasets: [{
+                            data: [data.namazPercentage, 100 - data.namazPercentage],
+                            backgroundColor: ['#047857', '#334155'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+                });
+            } catch (e) { console.error("Error loading metrics charts.", e); }
         }
 
-        function logout() {
-            currentStudentId = "";
-            globalUserRole = "Student";
-            document.getElementById('app-dashboard').classList.add('hidden');
-            document.getElementById('nav-btn-admin').classList.add('hidden');
-            document.getElementById('login-page').classList.remove('hidden');
+        // Leaderboard Generation
+        async function fetchLeaderboard() {
+            const tableBody = document.getElementById('leaderboard-entries');
+            tableBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500">Recalculating standings...</td></tr>`;
+            try {
+                const r = await fetch(`${DEPLOYED_APPS_SCRIPT_URL}?action=getLeaderboard`);
+                const rankData = await r.json();
+                tableBody.innerHTML = '';
+                
+                rankData.forEach((row, index) => {
+                    const rowMarkup = `
+                        <tr class="${row.studentId === currentStudent.studentId ? 'bg-emerald-950/30 text-emerald-300 font-bold' : ''}">
+                            <td class="p-3 text-center text-slate-400">${index + 1}</td>
+                            <td class="p-3">${row.name}</td>
+                            <td class="p-3 text-center text-emerald-400">${row.namazPercentage}%</td>
+                            <td class="p-3 text-center text-amber-400">${row.totalQuranPages}</td>
+                        </tr>`;
+                    tableBody.insertAdjacentHTML('beforeend', rowMarkup);
+                });
+            } catch (e) { tableBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-rose-400">Failed to pull leaderboard profiles.</td></tr>`; }
         }
+
+        function logout() { location.reload(); }
+        function showLoading(state) { /* Optional: Add overlay animation hook */ }
     </script>
 </body>
 </html>
