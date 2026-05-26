@@ -271,53 +271,59 @@
             });
         }
 
-        async function synchronizeCorePayload() {
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'getAnalytics', studentId: currentStudentId })
-                });
-                const data = await response.json();
-                if(data.success) {
-                    // Update main dynamic display components
-                    document.getElementById('card-namaz').innerText = (data.stats.namazPct || 0) + "%";
-                    document.getElementById('card-quran').innerText = (data.stats.quranCount || 0) + " pgs";
-                    document.getElementById('card-streak').innerText = (data.stats.streak || 0) + " Days";
-                    document.getElementById('card-rank').innerText = "#" + (data.stats.rank || "N/A");
-                    document.getElementById('quran-today-badge').innerText = data.stats.quranToday || 0;
-                    
-                    document.getElementById('target-namaz-lbl').innerText = (data.stats.namazPct || 0) + "% / 100%";
-                    document.getElementById('target-quran-lbl').innerText = (data.stats.quranCount || 0) + " Pages Absolute";
+       async function synchronizeCorePayload() {
+    try {
+        // We use an explicit GET-style fallback query to bypass CORS blocks safely
+        const response = await fetch(`${API_URL}?action=getAnalytics&studentId=${currentStudentId}`);
+        const data = await response.json();
+        
+        if(data.success) {
+            // Update main dynamic display components
+            document.getElementById('card-namaz').innerText = (data.stats.namazPct || 0) + "%";
+            document.getElementById('card-quran').innerText = (data.stats.quranCount || 0) + " pgs";
+            document.getElementById('card-streak').innerText = (data.stats.streak || 0) + " Days";
+            document.getElementById('card-rank').innerText = "#" + (data.stats.rank || "N/A");
+            document.getElementById('quran-today-badge').innerText = data.stats.quranToday || 0;
+            
+            document.getElementById('target-namaz-lbl').innerText = (data.stats.namazPct || 0) + "% / 100%";
+            document.getElementById('target-quran-lbl').innerText = (data.stats.quranCount || 0) + " Pages Absolute";
 
-                    buildPrayerFeed(data.stats.dailyNamaz || {});
-                    renderAnalyticsChart(data.historical || []);
-                    renderLeaderboard(data.leaderboard || []);
-                    
-                    if(data.settings) {
-                        const ramadanBtn = document.getElementById('btn-ramadan-mode');
-                        if(data.settings.Ramadan_Mode === "true") {
-                            ramadanBtn.innerText = "Active";
-                            ramadanBtn.className = "px-3 py-1 bg-emerald-600 text-white text-xs font-bold rounded-lg transition";
-                        } else {
-                            ramadanBtn.innerText = "Disabled";
-                            ramadanBtn.className = "px-3 py-1 bg-stone-300 dark:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-bold rounded-lg transition";
-                        }
-                    }
+            buildPrayerFeed(data.stats.dailyNamaz || {});
+            renderAnalyticsChart(data.historical || []);
+            renderLeaderboard(data.leaderboard || []);
+            
+            if(data.settings) {
+                const ramadanBtn = document.getElementById('btn-ramadan-mode');
+                if(data.settings.Ramadan_Mode === "true") {
+                    ramadanBtn.innerText = "Active";
+                    ramadanBtn.className = "px-3 py-1 bg-emerald-600 text-white text-xs font-bold rounded-lg transition";
+                } else {
+                    ramadanBtn.innerText = "Disabled";
+                    ramadanBtn.className = "px-3 py-1 bg-stone-300 dark:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-bold rounded-lg transition";
                 }
-            } catch (err) {
-                console.error("Critical tracking data sync error", err);
             }
         }
+    } catch (err) {
+        console.error("Tracking payload sync skipped/failed:", err);
+    }
+}
 
-        async function dispatchPrayerToggle(prayerName, targetState) {
+async function dispatchPrayerToggle(prayerName, targetState) {
+    // 1. INSTANT LOCAL UI UPDATE (No delay waiting for server)
+    const currentFeed = {};
+    prayersMeta.forEach(p => {
+        const row = document.querySelector(`[onclick*="${p.id}"]`);
+        const isActive = row.querySelector('i').classList.contains('fa-solid');
+        currentFeed[p.id] = p.id === prayerName ? targetState : (isActive ? 1 : 0);
+    });
+    buildPrayerFeed(currentFeed);
+
+    // 2. BACKGROUND FIRE-AND-FORGET POST SYNC
     try {
-        // Fires a safe text payload to clear CORS blockades
         await fetch(API_URL, {
             method: 'POST',
             mode: 'no-cors',
-            headers: {
-                'Content-Type': 'text/plain'
-            },
+            headers: { 'Content-Type': 'text/plain' },
             body: JSON.stringify({
                 action: 'updateStatus',
                 type: 'namaz',
@@ -326,6 +332,13 @@
                 value: targetState
             })
         });
+        
+        // 3. SILENT BACKGROUND UPDATE FOR METRIC CARDS
+        setTimeout(synchronizeCorePayload, 1500);
+    } catch(err) {
+        console.error("Network upload error:", err);
+    }
+}
         
         // Refresh calculations instantly on screen
         await synchronizeCorePayload();
