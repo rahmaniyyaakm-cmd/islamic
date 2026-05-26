@@ -310,19 +310,29 @@
         }
 
         async function dispatchPrayerToggle(prayerName, targetState) {
-            // Optimistic view modification updates layout instantly
-            await fetch(API_URL, {
-                method: 'POST',
-                body: JSON.stringify({
-                    action: 'updateStatus',
-                    type: 'namaz',
-                    studentId: currentStudentId,
-                    prayer: prayerName,
-                    value: targetState
-                })
-            });
-            await synchronizeCorePayload();
-        }
+    try {
+        // Fires a safe text payload to clear CORS blockades
+        await fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'text/plain'
+            },
+            body: JSON.stringify({
+                action: 'updateStatus',
+                type: 'namaz',
+                studentId: currentStudentId,
+                prayer: prayerName,
+                value: targetState
+            })
+        });
+        
+        // Refresh calculations instantly on screen
+        await synchronizeCorePayload();
+    } catch(err) {
+        console.error("Failed to sync prayer status:", err);
+    }
+}
 
         function adjustCounter(amt) {
             const el = document.getElementById('quran-val-input');
